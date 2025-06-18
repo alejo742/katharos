@@ -1,0 +1,66 @@
+/**
+ * SearchCard.css
+ * This file contains the styles for the SearchCard component.
+ */
+
+ :root {
+	--colorPrimary: #F2F0EA;
+	--colorPrimaryDark: #010101;
+	--colorSecondaryGray: #A4A4A4;
+	--colorSecondaryGreen: #086e60;
+	--colorSecondaryRed: #E56F56;
+}
+
+.search-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: white;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    gap: 1.5rem;
+}
+
+.search-card:hover {
+    background-color: #f5f5f5;
+}
+
+.search-card-image {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 0.3rem;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-card-info {
+    flex: 1;
+}
+
+.search-card-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--colorPrimaryDark);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20rem;
+}
+
+.search-card-category {
+    font-size: 1.2rem;
+    color: var(--colorSecondaryGray);
+    margin: 0.3rem 0 0;
+}
+
+.search-card-price {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--colorSecondaryGreen);
+    white-space: nowrap;
+}

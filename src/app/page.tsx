@@ -12,12 +12,12 @@ export default function Home() {
           <div className="hero-text">
             <h1>Descubre prendas sostenibles al mejor precio.</h1>
             <p>Encuentra los mejores productos para toda la familia con ofertas increíbles.</p>
-            <button className="hero-cta-button">
+            <Link href="/products" className="hero-cta-button">
               Comprar ahora
-            </button>
+            </Link>
           </div>
           <Link href="/products" className="hero-image">
-            <img src="landing/hero-image.jpg" alt="Ofertas especiales" />
+            <img src="landing/hero-image.png" alt="Ofertas especiales" />
           </Link>
         </div>
       </div>

@@ -1,0 +1,288 @@
+/**
+ * Register Page Styles
+ */
+ :root {
+  --colorPrimary: #F2F0EA;
+  --colorPrimaryDark: #010101;
+  --colorSecondaryGray: #A4A4A4;
+  --colorSecondaryGreen: #086e60;
+  --colorSecondaryRed: #E56F56;
+}
+
+.register-page-container {
+  min-height: 100vh;
+  background-color: var(--colorPrimary);
+}
+
+/**
+ * Register Section
+ */
+.register-section {
+  padding: 4rem 5vw 8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 8rem);
+}
+
+.register-container {
+  background-color: white;
+  border-radius: 1.2rem;
+  padding: 4rem;
+  width: 100%;
+  max-width: 48rem;
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.08);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.register-header h1 {
+  font-size: 3.2rem;
+  color: var(--colorPrimaryDark);
+  margin-bottom: 1rem;
+  font-weight: 900;
+}
+
+.register-header p {
+  font-size: 1.6rem;
+  color: var(--colorSecondaryGray);
+}
+
+/**
+ * Register Form
+ */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--colorSecondaryGray);
+  font-size: 2rem !important;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 1.5rem 1.5rem 1.5rem 5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.8rem;
+  font-size: 1.6rem;
+  color: var(--colorPrimaryDark);
+  background-color: #f9f9f9;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--colorSecondaryGreen);
+  box-shadow: 0 0 0 0.2rem rgba(8, 110, 96, 0.2);
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  font-size: 1.4rem;
+  color: var(--colorSecondaryGray);
+  margin-top: 0.5rem;
+}
+
+.terms-checkbox input {
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-top: 0.2rem;
+  accent-color: var(--colorSecondaryGreen);
+}
+
+.terms-checkbox a {
+  color: var(--colorSecondaryGreen);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.terms-checkbox a:hover {
+  color: #075a4f;
+  text-decoration: underline;
+}
+
+.register-button {
+  background-color: var(--colorSecondaryGreen);
+  color: white;
+  border: none;
+  border-radius: 0.8rem;
+  padding: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.register-button:hover:not(:disabled) {
+  background-color: #075a4f;
+  transform: translateY(-0.2rem);
+  box-shadow: 0 0.8rem 2rem rgba(8, 110, 96, 0.3);
+}
+
+.register-button:disabled {
+  background-color: #a0cfca;
+  cursor: not-allowed;
+}
+
+.button-icon {
+  font-size: 1.4rem !important;
+}
+
+/**
+ * OAuth Section
+ */
+.register-divider {
+  position: relative;
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.register-divider::before,
+.register-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.register-divider::before {
+  left: 0;
+}
+
+.register-divider::after {
+  right: 0;
+}
+
+.register-divider span {
+  display: inline-block;
+  padding: 0 1.5rem;
+  background-color: white;
+  position: relative;
+  z-index: 1;
+  color: var(--colorSecondaryGray);
+  font-size: 1.4rem;
+}
+
+.oauth-buttons {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.oauth-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  border: 1px solid #e0e0e0;
+  background-color: white;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.oauth-button:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-0.2rem);
+}
+
+.oauth-icon {
+  font-size: 2rem !important;
+}
+
+.google-button .oauth-icon {
+  color: #DB4437;
+}
+
+.apple-button .oauth-icon {
+  color: #000000;
+}
+
+.facebook-button .oauth-icon {
+  color: #4267B2;
+}
+
+.login-prompt {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--colorSecondaryGray);
+}
+
+.login-prompt a {
+  color: var(--colorSecondaryGreen);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-prompt a:hover {
+  color: #075a4f;
+  text-decoration: underline;
+}
+
+/**
+ * Tablet Responsive
+ */
+@media only screen and (max-width: 850px) {
+  .register-container {
+    padding: 3rem;
+    max-width: 42rem;
+  }
+  
+  .register-header h1 {
+    font-size: 2.8rem;
+  }
+}
+
+/**
+ * Mobile Responsive
+ */
+@media only screen and (max-width: 600px) {
+  .register-section {
+    padding: 2rem 5vw 6rem;
+  }
+  
+  .register-container {
+    padding: 2.5rem;
+    border-radius: 1rem;
+  }
+  
+  .register-header h1 {
+    font-size: 2.6rem;
+  }
+  
+  .oauth-buttons {
+    flex-direction: column;
+  }
+  
+  .terms-checkbox {
+    font-size: 1.3rem;
+  }
+}

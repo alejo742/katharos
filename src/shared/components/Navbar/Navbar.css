@@ -74,7 +74,7 @@
 	font-weight: 600;
 	color: var(--colorPrimaryDark);
 }
-.login-button {
+.navbar-login-button {
 	padding: 1rem 2rem;
 	border-radius: 0.5rem;
 	background-color: #086e60;
@@ -86,7 +86,7 @@
 	gap: 1rem;
 	transition: all 0.3s;
 }
-.login-button:hover {
+.navbar-login-button:hover {
 	cursor: pointer;
 	opacity: 0.8;
 }
