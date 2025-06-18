@@ -39,10 +39,10 @@ export default function Navbar(props: NavbarProps) {
                     />
                 </div>
                 <div className="right">
-                    <div className="cart-button">
+                    <Link href="/cart" className="cart-button">
                         <ShoppingCartOutlined className='icon'/>
                         <span>Carrito</span>
-                    </div>
+                    </Link>
                     <Link href="/login" className="login-button">
                         {loggedIn ? (
                             <span>Mi cuenta</span>

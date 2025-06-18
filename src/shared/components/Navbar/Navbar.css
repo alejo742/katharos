@@ -62,11 +62,12 @@
 }
 .cart-button:hover {
 	cursor: pointer;
-	background-color: #e5e5e5;
+	background-color: rgba(229, 111, 86, 0.2);
 }
 .cart-button .icon {
 	width: 2rem;
 	height: 2rem;
+	color: #E56F56;
 }
 .cart-button span {
 	font-size: 1.4rem;
