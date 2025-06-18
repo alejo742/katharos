@@ -1,0 +1,45 @@
+:root {
+	--colorPrimary: #F2F0EA;
+	--colorPrimaryDark: #010101;
+	--colorSecondaryGray: #A4A4A4;
+	--colorSecondaryGreen: #086e60;
+	--colorSecondaryRed: #E56F56;
+}
+
+.search-bar {
+	background-color: #e5e5e5;
+	border-radius: 0.5rem;
+	padding: 1rem 1.5rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+}
+.search-icon {
+	width: 2rem !important;
+	height: 2rem !important;
+	color: #484848;
+}
+.search-input {
+	border: none;
+	outline: none;
+	background-color: transparent;
+	color: var(--colorPrimaryDark);
+	font-size: 1.4rem;
+	font-weight: 400;
+	height: 100%;
+	width: 30rem;
+}
+/**
+ * Mobile Navbar
+ */
+@media only screen and (max-width: 850px) {
+	.search-input {
+		width: min(20rem, 50%);
+	}
+}
+@media only screen and (max-width: 600px) {
+	.search-input, .search-bar {
+		width: 100%;
+	}
+}
