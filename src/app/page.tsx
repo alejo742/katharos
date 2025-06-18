@@ -17,7 +17,7 @@ export default function Home() {
             </button>
           </div>
           <Link href="/products" className="hero-image">
-            <img src="landing/hero-image.png" alt="Ofertas especiales" />
+            <img src="landing/hero-image.jpg" alt="Ofertas especiales" />
           </Link>
         </div>
       </div>
