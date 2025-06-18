@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import { ShoppingCartOutlined } from '@mui/icons-material';
 import './Navbar.css';
@@ -11,6 +11,7 @@ interface NavbarProps {
 }
 
 export default function Navbar(props: NavbarProps) {
+    const [loggedIn, setLoggedIn] = useState(false);
 
     /**
      * Handle search function
@@ -22,6 +23,11 @@ export default function Navbar(props: NavbarProps) {
 
     return (
         <div className='navbar-container'>
+            <div className="promotional-banner">
+                <span>
+                    ¡10% de descuento en tu primera compra al registrarte!
+                </span>
+            </div>
             <nav className='main-navbar'>
                 <Link href="/" className="left">
                     <img src="brand/logo-katharos.png" alt="" />
@@ -37,7 +43,13 @@ export default function Navbar(props: NavbarProps) {
                         <ShoppingCartOutlined className='icon'/>
                         <span>Carrito</span>
                     </div>
-                    <div className="profile-button"></div>
+                    <Link href="/login" className="login-button">
+                        {loggedIn ? (
+                            <span>Mi cuenta</span>
+                        ) : (
+                            <span>Iniciar sesión</span>
+                        )}
+                    </Link>
                 </div>
             </nav>
             <div className="mobile-searchbar">
@@ -48,10 +60,11 @@ export default function Navbar(props: NavbarProps) {
             </div>
             <div className='category-navbar'>
                 <ul>
-                    <li>Inicio</li>
-                    <li>Productos</li>
-                    <li>Sobre nosotros</li>
-                    <li>Contacto</li>
+                    {['Hombres', 'Mujeres', 'Niños', 'Hogar'].map((category) => (
+                        <li key={category}>
+                            <a href={`/${category.toLowerCase()}`}>{category}</a>
+                        </li>
+                    ))}
                 </ul>
             </div>
         </div>

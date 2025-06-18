@@ -10,6 +10,20 @@
 	display: flex;
 	flex-direction: column;
 }
+.promotional-banner {
+	background-color: var(--colorSecondaryGreen);
+	color: var(--colorPrimary);
+	padding: 1rem 5vw;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.promotional-banner span {
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 1.2rem;
+	font-weight: 600;
+}
 
 /**
  * Desktop Navbar
@@ -34,6 +48,7 @@
 .main-navbar .right {
 	display: flex;
 	align-items: center;
+	gap: 1.5rem;
 }
 .cart-button {
 	padding: 1rem 2rem;
@@ -57,6 +72,22 @@
 	font-weight: 600;
 	color: var(--colorPrimaryDark);
 }
+.login-button {
+	padding: 1rem 2rem;
+	border-radius: 0.5rem;
+	background-color: #086e60;
+	color: #F2F0EA;
+	font-size: 1.2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	transition: all 0.3s;
+}
+.login-button:hover {
+	cursor: pointer;
+	opacity: 0.8;
+}
 
 /**
  * Mobile Navbar
@@ -78,5 +109,41 @@
 	}
 	.mobile-searchbar {
 		display: flex;
+	}
+}
+
+/**
+ * Category navigation
+ */
+ .category-navbar {
+	display: flex;
+	padding: 1rem 5vw;
+ }
+.category-navbar ul {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	list-style: none;
+	gap: 3rem;
+}
+.category-navbar ul li a {
+	padding: 0.5rem 0;
+	color: #010101;
+	font-size: 1.4rem;
+	text-decoration: none;
+}
+.category-navbar ul li a:hover {
+	cursor: pointer;
+	text-decoration: underline;
+	text-underline-offset: 0.2rem;
+	color: var(--colorSecondaryGreen);
+}
+
+/**
+ * Mobile Category navigation
+ */
+@media only screen and (max-width: 600px) {
+	.category-navbar, .category-navbar ul {
+		justify-content: center;
 	}
 }
