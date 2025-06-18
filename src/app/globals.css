@@ -494,3 +494,34 @@ div:has(> .text-animate) {
   animation: l3 1s infinite linear;
 }
 @keyframes l3 {to{transform: rotate(1turn)}}
+
+/* Scale up for larger screens */
+@media (min-width: 1440px) {
+  html {
+    font-size: 70%; /* 1rem = 11.2px */
+  }
+}
+
+@media (min-width: 1600px) {
+  html {
+    font-size: 75%; /* 1rem = 12px */
+  }
+}
+
+@media (min-width: 1920px) {
+  html {
+    font-size: 85%; /* 1rem = 13.6px */
+  }
+}
+
+@media (min-width: 2560px) {
+  html {
+    font-size: 100%; /* 1rem = 16px */
+  }
+}
+
+@media (min-width: 3840px) {
+  html {
+    font-size: 125%; /* 1rem = 20px */
+  }
+}

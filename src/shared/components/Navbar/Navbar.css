@@ -7,6 +7,7 @@
 }
 
 .navbar-container {
+	background-color: #fff;
 	display: flex;
 	flex-direction: column;
 }
@@ -117,7 +118,7 @@
  */
  .category-navbar {
 	display: flex;
-	padding: 1rem 5vw;
+	padding: 2rem 5vw;
  }
 .category-navbar ul {
 	display: flex;
@@ -127,7 +128,6 @@
 	gap: 3rem;
 }
 .category-navbar ul li a {
-	padding: 0.5rem 0;
 	color: #010101;
 	font-size: 1.4rem;
 	text-decoration: none;
