@@ -15,45 +15,76 @@ import {
   ArrowForwardIos 
 } from '@mui/icons-material';
 import './page.css';
+import { useRouter } from 'next/navigation';
+import signIn from '@/features/auth/services/signIn';
+import ErrorTooltip from '@/shared/components/ErrorTooltip/ErrorTooltip';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   /**
    * Handle email/password login
    */
   const handleEmailLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Login logic will go here
-    console.log('Login with:', email, password);
-  };
+    setError(null);
+    setIsLoading(true);
 
-  /**
-   * Handle Google sign in
-   */
-  const handleGoogleLogin = () => {
-    // Google auth logic will go here
-    console.log('Login with Google');
+    signIn({
+      email,
+      password,
+      provider: 'email'
+    }, setError)
+      .then(() => {
+        // handle redirection
+        router.push('/productos');
+      })
+      .catch(err => {
+        console.error('Error signing in with email:', err);
+        setError('Error al iniciar sesión. Inténtalo de nuevo más tarde.');
+      });
+
+    setIsLoading(false);
   };
 
   /**
    * Handle other OAuth providers
    */
-  const handleOAuthLogin = (provider: string) => {
-    // Other OAuth logic will go here
-    console.log(`Login with ${provider}`);
+  const handleOAuthLogin = async (provider: string) => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      await signIn({
+        provider
+      }, setError);
+      // handle redirection
+      router.push('/productos');
+    } catch (err) {
+      console.error(`Error signing in with ${provider}:`, err);
+      setError(`Error al iniciar sesión con ${provider}. Inténtalo de nuevo más tarde.`);
+    }
+
+    setIsLoading(false);
   };
 
   return (
     <div className="login-page-container">
+      { error && 
+        <ErrorTooltip message={error} isVisible={ error.length > 0 } />
+      }
+
       <Navbar />
       
       <div className="login-section">
         <div className="login-container">
           <div className="login-header">
             <h1>Inicia Sesión</h1>
-            <p>Accede a tu cuenta para ver tus pedidos y favoritos</p>
+            <p>Accede a tu cuenta para obtener beneficios exclusivos</p>
           </div>
 
           <form className="login-form" onSubmit={handleEmailLogin}>
@@ -102,7 +133,7 @@ export default function LoginPage() {
           <div className="oauth-buttons">
             <button 
               className="oauth-button google-button"
-              onClick={handleGoogleLogin}
+              onClick={() => handleOAuthLogin('google')}
             >
               <Google className="oauth-icon" />
               <span>Google</span>
@@ -110,7 +141,7 @@ export default function LoginPage() {
             
             <button 
               className="oauth-button apple-button"
-              onClick={() => handleOAuthLogin('Apple')}
+              onClick={() => handleOAuthLogin('apple')}
             >
               <Apple className="oauth-icon" />
               <span>Apple</span>
@@ -118,7 +149,7 @@ export default function LoginPage() {
             
             <button 
               className="oauth-button facebook-button"
-              onClick={() => handleOAuthLogin('Facebook')}
+              onClick={() => handleOAuthLogin('facebook')}
             >
               <Facebook className="oauth-icon" />
               <span>Facebook</span>

@@ -1,7 +1,7 @@
 /**
  * Function to fetch products based on a query.
  */
-import { Product } from "@/shared/types/product";
+import { Product } from "@/features/products/types/product";
 
 /**
  * Fetches products from the server based on a search query.

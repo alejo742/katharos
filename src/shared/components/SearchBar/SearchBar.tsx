@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { SearchOutlined } from "@mui/icons-material";
-import { Product } from "@/shared/types/product";
+import { Product } from "@/features/products/types/product";
 import { getProductsByQuery } from "@/features/products/services/getProductsByQuery";
 import SearchCard from "./SearchCard/SearchCard";
 import "./SearchBar.css";
@@ -19,41 +19,61 @@ interface SearchBarProps {
 export default function SearchBar({ placeholder = "Search...", onSearch }: SearchBarProps) {
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isDebouncing, setIsDebouncing] = useState(false);
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchBarRef = useRef<HTMLDivElement>(null);
+    const searchTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
             if (query.trim().length < 2) {
                 setSearchResults([]);
                 setShowDropdown(false);
+                setIsDebouncing(false);
                 return;
             }
             
-            setIsLoading(true);
+            // Set debouncing state immediately when query changes
+            setIsDebouncing(true);
             setShowDropdown(true);
             
-            try {
-                // Use the imported function instead of direct fetch
-                const data = await getProductsByQuery(query);
-                setSearchResults(data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                setSearchResults([]);
-            } finally {
-                setIsLoading(false);
+            // Clear any existing timer
+            if (searchTimerRef.current) {
+                clearTimeout(searchTimerRef.current);
             }
+            
+            // Set a new 2-second timer before executing the search
+            searchTimerRef.current = setTimeout(async () => {
+                setIsLoading(true);
+                setIsDebouncing(false);
+                
+                try {
+                    // Execute search after 2 seconds of inactivity
+                    const data = await getProductsByQuery(query);
+                    setSearchResults(data);
+                    
+                    // Only call onSearch after the debounce period
+                    onSearch(query);
+                } catch (error) {
+                    console.error("Error fetching products:", error);
+                    setSearchResults([]);
+                } finally {
+                    setIsLoading(false);
+                }
+            }, 2000); // 2 seconds debounce
         };
 
-        // Debounce the search
-        const debounceTimer = setTimeout(() => {
-            fetchProducts();
-        }, 300);
-
-        return () => clearTimeout(debounceTimer);
-    }, [query]);
+        fetchProducts();
+        
+        // Cleanup function to clear the timer when component unmounts
+        return () => {
+            if (searchTimerRef.current) {
+                clearTimeout(searchTimerRef.current);
+            }
+        };
+    }, [query, onSearch]);
 
     useEffect(() => {
         // Close dropdown when clicking outside
@@ -72,7 +92,7 @@ export default function SearchBar({ placeholder = "Search...", onSearch }: Searc
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setQuery(value);
-        onSearch(value);
+        // Don't call onSearch here anymore - it will be called after debounce
     };
 
     return (
@@ -91,10 +111,15 @@ export default function SearchBar({ placeholder = "Search...", onSearch }: Searc
             
             {showDropdown && (
                 <div className="search-dropdown" ref={dropdownRef}>
-                    {isLoading ? (
+                    {isDebouncing ? (
                         <div className="search-loading">
                             <div className="search-loader"></div>
-                            <p>Searching...</p>
+                            <p>Cargando...</p>
+                        </div>
+                    ) : isLoading ? (
+                        <div className="search-loading">
+                            <div className="search-loader"></div>
+                            <p>Buscando...</p>
                         </div>
                     ) : searchResults.length > 0 ? (
                         <div className="search-results">
@@ -104,7 +129,7 @@ export default function SearchBar({ placeholder = "Search...", onSearch }: Searc
                         </div>
                     ) : query.trim().length >= 2 ? (
                         <div className="search-no-results">
-                            <p>No products found for "{query}"</p>
+                            <p>No se encontraron productos para "{query}"</p>
                         </div>
                     ) : null}
                 </div>

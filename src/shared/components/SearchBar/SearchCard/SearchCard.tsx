@@ -4,7 +4,7 @@
  */
 import React from "react";
 import Image from "next/image";
-import { Product } from "@/shared/types/product";
+import { Product } from "@/features/products/types/product";
 import "./SearchCard.css";
 
 export default function SearchCard({ product }: { product: Product }) {

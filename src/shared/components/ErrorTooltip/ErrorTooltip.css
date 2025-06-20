@@ -1,0 +1,91 @@
+/**
+ * Error Tooltip Styles
+ */
+ :root {
+  --colorPrimary: #F2F0EA;
+  --colorPrimaryDark: #010101;
+  --colorSecondaryGray: #A4A4A4;
+  --colorSecondaryGreen: #086e60;
+  --colorSecondaryRed: #E56F56;
+}
+
+.error-tooltip {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(-2rem);
+  z-index: 1000;
+  min-width: 30rem;
+  max-width: 50rem;
+  background-color: white;
+  border-radius: 0.8rem;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.15);
+  border-left: 0.4rem solid var(--colorSecondaryRed);
+  padding: 0;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.error-tooltip.top {
+  top: 2rem;
+}
+
+.error-tooltip.bottom {
+  bottom: 2rem;
+}
+
+.error-tooltip.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.error-tooltip-content {
+  display: flex;
+  align-items: center;
+  padding: 1.6rem;
+}
+
+.error-icon {
+  color: var(--colorSecondaryRed);
+  font-size: 2.2rem !important;
+  margin-right: 1.2rem;
+  flex-shrink: 0;
+}
+
+.error-message {
+  flex: 1;
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--colorPrimaryDark);
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  margin-left: 1.2rem;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: #f1f1f1;
+}
+
+.close-icon {
+  color: var(--colorSecondaryGray);
+  font-size: 1.8rem !important;
+}
+
+/* Mobile responsive */
+@media only screen and (max-width: 600px) {
+  .error-tooltip {
+    min-width: 90%;
+    max-width: 90%;
+  }
+}

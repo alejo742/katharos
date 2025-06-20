@@ -4,7 +4,7 @@
  */
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Product } from "@/shared/types/product";
+import { Product } from "@/features/products/types/product";
 
 export default class ProductRepository {
 

@@ -15,6 +15,9 @@ import {
   Facebook,
   ArrowForwardIos
 } from '@mui/icons-material';
+import signIn from '@/features/auth/services/signIn';
+import ErrorTooltip from '@/shared/components/ErrorTooltip/ErrorTooltip';
+import { useRouter } from 'next/navigation';
 import './page.css';
 
 export default function RegisterPage() {
@@ -23,41 +26,70 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   /**
    * Handle email/password registration
    */
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
+    setError(null);
+    setIsLoading(true);
     e.preventDefault();
-    // Registration logic will go here
-    console.log('Register with:', name, email, password, confirmPassword);
-  };
 
-  /**
-   * Handle Google sign up
-   */
-  const handleGoogleRegister = () => {
-    // Google auth logic will go here
-    console.log('Register with Google');
+    try {
+      await signIn({
+        email,
+        password,
+        provider: 'email'
+      }, setError);
+
+      // handle redirection
+      router.push('/products');
+    } catch (err) {
+      console.error('Error registering with email:', err);
+      setError('Error al crear la cuenta. Inténtalo de nuevo más tarde.');
+    }
+
+    setIsLoading(false);
   };
 
   /**
    * Handle other OAuth providers
    */
-  const handleOAuthRegister = (provider: string) => {
-    // Other OAuth logic will go here
-    console.log(`Register with ${provider}`);
+  const handleOAuthRegister = async (provider: string) => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      await signIn({
+        provider
+      }, setError);
+
+      // handle redirection
+      router.push('/products');
+    } catch (err) {
+      console.error(`Error signing in with ${provider}:`, err);
+      setError(`Error al iniciar sesión con ${provider}. Inténtalo de nuevo más tarde.`);
+    }
+
+    setIsLoading(false);
   };
 
   return (
     <div className="register-page-container">
+      { error && 
+        <ErrorTooltip message={error} isVisible={ error.length > 0 } />
+      }
+      
       <Navbar />
       
       <div className="register-section">
         <div className="register-container">
           <div className="register-header">
             <h1>Crear Cuenta</h1>
-            <p>Regístrate para acceder a ofertas exclusivas</p>
+            <p>Regístrate para obtener beneficios exclusivos</p>
           </div>
 
           <form className="register-form" onSubmit={handleRegister}>
@@ -134,7 +166,7 @@ export default function RegisterPage() {
           <div className="oauth-buttons">
             <button 
               className="oauth-button google-button"
-              onClick={handleGoogleRegister}
+              onClick={() => handleOAuthRegister('google')}
             >
               <Google className="oauth-icon" />
               <span>Google</span>
@@ -142,7 +174,7 @@ export default function RegisterPage() {
             
             <button 
               className="oauth-button apple-button"
-              onClick={() => handleOAuthRegister('Apple')}
+              onClick={() => handleOAuthRegister('apple')}
             >
               <Apple className="oauth-icon" />
               <span>Apple</span>
@@ -150,7 +182,7 @@ export default function RegisterPage() {
             
             <button 
               className="oauth-button facebook-button"
-              onClick={() => handleOAuthRegister('Facebook')}
+              onClick={() => handleOAuthRegister('facebook')}
             >
               <Facebook className="oauth-icon" />
               <span>Facebook</span>
