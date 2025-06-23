@@ -13,7 +13,12 @@ import './page.css';
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const oobCode = searchParams.get('oobCode');
+  
+  // Check for code in multiple possible parameters
+  // Firebase might use 'oobCode' or 'code' as the parameter name
+  const oobCode = searchParams.get('oobCode') || 
+                  searchParams.get('code') || 
+                  searchParams.get('apiKey');
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,7 +29,7 @@ export default function ResetPasswordPage() {
   // Check if oobCode is present
   useEffect(() => {
     if (!oobCode) {
-      setError('Enlace de restablecimiento de contraseña inválido o expirado.');
+      setError('Enlace de restablecimiento de contraseña inválido o expirado. Solicita un nuevo enlace.');
     }
   }, [oobCode]);
 
