@@ -2,9 +2,10 @@
  * General sign-in flow
  */
 
-interface SignInData {
-  email?: string;
-  password?: string;
+export interface SignInData {
+  email: string;
+  password: string;
+  name?: string;
   provider: string;
 }
 import signInWithApple from "./signInWithApple";
@@ -18,7 +19,7 @@ import signInWithEmailAndPassword from "./signInWithEmailAndPassword";
  * @returns {Promise<void>} Returns a promise that resolves when the sign-in is successful.
  */
 export default async function signIn(data: SignInData, setError: (error: string) => void): Promise<void> {
-  const { email, password, provider } = data;
+  const { email, password, provider, name } = data;
   let success = false;
     
   /**
@@ -27,11 +28,18 @@ export default async function signIn(data: SignInData, setError: (error: string)
   if (provider === 'email' && email && password) {
     // Email and password auth logic
     try {
-      await signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(data);
       success = true;
-    } catch (err) {
+    } catch (err: Error | any) {
       console.error('Error signing in with email and password:', err);
-      setError('Error al iniciar sesión con correo electrónico y contraseña. Inténtalo de nuevo más tarde.');
+      if (err.name === 'UserNotFoundError') {
+        // Special case for user not found
+        setError('500: Usuario no encontrado. Por favor, regístrate primero.');
+        return;
+      }
+      else {
+        setError('Error al iniciar sesión con correo electrónico y contraseña. Inténtalo de nuevo más tarde');
+      }
     }
   }
 

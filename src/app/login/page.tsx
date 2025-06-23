@@ -3,7 +3,7 @@
  */
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/shared/components/Navbar/Navbar';
 import { 
@@ -58,19 +58,22 @@ export default function LoginPage() {
     setError(null);
     setIsLoading(true);
 
-    try {
-      await signIn({
-        provider
-      }, setError);
-      // handle redirection
-      router.push('/productos');
-    } catch (err) {
-      console.error(`Error signing in with ${provider}:`, err);
-      setError(`Error al iniciar sesión con ${provider}. Inténtalo de nuevo más tarde.`);
-    }
+    await signIn({
+      provider,
+      email,
+      password
+    }, setError);
+    // handle redirection
+    router.push('/productos');
 
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (error?.includes('500')) { // meaning that someone unregistered tries to login, redirect to register
+      router.push('/register?error=Necesitas%20registrarte%20primero');
+    }
+  }, [error]);
 
   return (
     <div className="login-page-container">
@@ -111,10 +114,11 @@ export default function LoginPage() {
             </div>
             
             <div className="form-footer">
-              <label className="remember-me">
+              {/* not needed yet */}
+              {/* <label className="remember-me">
                 <input type="checkbox" />
                 <span>Recordarme</span>
-              </label>
+              </label> */}
               <Link href="/forgot-password" className="forgot-password">
                 ¿Olvidaste tu contraseña?
               </Link>
@@ -139,7 +143,7 @@ export default function LoginPage() {
               <span>Google</span>
             </button>
             
-            <button 
+            {/* <button 
               className="oauth-button apple-button"
               onClick={() => handleOAuthLogin('apple')}
             >
@@ -153,7 +157,7 @@ export default function LoginPage() {
             >
               <Facebook className="oauth-icon" />
               <span>Facebook</span>
-            </button>
+            </button> */}
           </div>
           
           <div className="signup-prompt">

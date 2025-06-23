@@ -106,8 +106,5 @@ Development is still required for the following features:
   - Implement payment processing (first, Yape/Plin, then Stripe or similar)
   - Order confirmation page (and email notification)
 
-- [ ] Implement user authentication (partially done with Google)
-  - User registration through email and password
-    - Try to do email verification
+- [ ] Implement user authentication (almost done)
   - User registration with OAuth (Facebook and Apple)
-  - User session saving (using cookies or local storage)
