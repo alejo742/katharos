@@ -11,15 +11,14 @@ import {
   PersonOutlineOutlined,
   EmailOutlined, 
   LockOutlined, 
-  Google, 
-  Apple, 
-  Facebook,
+  Google,
   ArrowForwardIos
 } from '@mui/icons-material';
 import signIn from '@/features/auth/services/signIn';
 import ErrorTooltip from '@/shared/components/ErrorTooltip/ErrorTooltip';
 import { useRouter } from 'next/navigation';
 import './page.css';
+import ROUTES from '@/shared/routes';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -49,64 +48,71 @@ export default function RegisterPage() {
   }, [urlError, urlEmail]);
 
   /**
-   * Handle email/password registration
+   * Validate the form data
+   * @returns {boolean} True if valid, false otherwise
    */
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-    
-    // Validate passwords match
+  const validateForm = () => {
+    // Only validate password fields for email registration
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
-      setIsLoading(false);
-      return;
+      return false;
     }
     
-    // Validate name is provided
     if (!name.trim()) {
       setError('Por favor, ingresa tu nombre');
-      setIsLoading(false);
-      return;
+      return false;
     }
-
-    try {
-      await signIn({
-        email,
-        password,
-        provider: 'email',
-        name // Pass the name to the sign in function
-      }, setError);
-
-      // handle redirection
-      router.push('/productos');
-    } catch (err: any) {
-      console.error('Error registering with email:', err);
-      setError(err.message || 'Error al crear la cuenta. Inténtalo de nuevo más tarde.');
-    } finally {
-      setIsLoading(false);
+    
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres');
+      return false;
     }
+    
+    return true;
   };
 
   /**
-   * Handle other OAuth providers
+   * Handle registration for any provider
    */
-  const handleOAuthRegister = async (provider: string) => {
+  const handleRegister = async (e: React.FormEvent | React.MouseEvent, provider: string) => {
+    if (e) {
+      e.preventDefault(); // Prevent form submission for email registration
+    }
+    
     setError(null);
     setIsLoading(true);
+    
+    // For email provider, validate form first
+    if (provider === 'email' && !validateForm()) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      await signIn({
+      // Prepare registration data
+      const registrationData: any = {
         provider,
-        email,    // pass other attrs.
-        password  // 
-      }, setError);
-
-      // handle redirection
-      router.push('/productos');
+      };
+      
+      // Add additional fields for email provider
+      if (provider === 'email') {
+        registrationData.name = name;
+        registrationData.email = email;
+        registrationData.password = password;
+      }
+      
+      const result = await signIn(registrationData, setError);
+      
+      if (result.success) {
+        // Successful registration
+        router.push(ROUTES.PRODUCTS);
+      } else if (result.redirectTo) {
+        // Need to redirect elsewhere (like login page for existing users)
+        router.push(result.redirectTo);
+      }
     } catch (err: any) {
-      console.error(`Error signing in with ${provider}:`, err);
-      setError(err.message || `Error al iniciar sesión con ${provider}. Inténtalo de nuevo más tarde.`);
+      console.error('Registration error:', err);
+      setError(err.message || 'Error durante el registro');
     } finally {
       setIsLoading(false);
     }
@@ -127,15 +133,16 @@ export default function RegisterPage() {
             <p>Regístrate para obtener beneficios exclusivos</p>
           </div>
 
-          <form className="register-form" onSubmit={handleRegister}>
+          <form className="register-form" onSubmit={(e) => handleRegister(e, 'email')}>
             <div className="form-group">
               <PersonOutlineOutlined className="input-icon" />
               <input 
                 type="text" 
-                placeholder="Nombre completo" 
+                placeholder="Nombre" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             
@@ -147,6 +154,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             
@@ -159,6 +167,7 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
+                disabled={isLoading}
               />
             </div>
             
@@ -171,6 +180,7 @@ export default function RegisterPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
+                disabled={isLoading}
               />
             </div>
             
@@ -180,9 +190,10 @@ export default function RegisterPage() {
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
                 required
+                disabled={isLoading}
               />
               <span>
-                Acepto los <Link href="/terms">Términos y Condiciones</Link> y la <Link href="/privacy">Política de Privacidad</Link>
+                Acepto los <Link href={ROUTES.TERMS}>Términos y Condiciones</Link> y la <Link href={ROUTES.PRIVACY_POLICY}>Política de Privacidad</Link>
               </span>
             </label>
             
@@ -203,34 +214,16 @@ export default function RegisterPage() {
           <div className="oauth-buttons">
             <button 
               className="oauth-button google-button"
-              onClick={() => handleOAuthRegister('google')}
+              onClick={(e) => handleRegister(e, 'google')}
               disabled={isLoading}
             >
               <Google className="oauth-icon" />
               <span>Google</span>
             </button>
-            
-            {/* <button 
-              className="oauth-button apple-button"
-              onClick={() => handleOAuthRegister('apple')}
-              disabled={isLoading}
-            >
-              <Apple className="oauth-icon" />
-              <span>Apple</span>
-            </button>
-            
-            <button 
-              className="oauth-button facebook-button"
-              onClick={() => handleOAuthRegister('facebook')}
-              disabled={isLoading}
-            >
-              <Facebook className="oauth-icon" />
-              <span>Facebook</span>
-            </button> */}
           </div>
           
           <div className="login-prompt">
-            <p>¿Ya tienes una cuenta? <Link href="/login">Iniciar sesión</Link></p>
+            <p>¿Ya tienes una cuenta? <Link href={ROUTES.LOGIN}>Iniciar sesión</Link></p>
           </div>
         </div>
       </div>

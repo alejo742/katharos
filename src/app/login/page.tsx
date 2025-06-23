@@ -5,80 +5,88 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/shared/components/Navbar/Navbar';
 import { 
   EmailOutlined, 
   LockOutlined, 
   Google, 
-  Apple, 
-  Facebook, 
   ArrowForwardIos 
 } from '@mui/icons-material';
 import './page.css';
 import { useRouter } from 'next/navigation';
 import signIn from '@/features/auth/services/signIn';
 import ErrorTooltip from '@/shared/components/ErrorTooltip/ErrorTooltip';
+import ROUTES from '@/shared/routes';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Get URL parameters
+  const urlError = searchParams.get('error');
+  const urlEmail = searchParams.get('email');
+  
+  const [email, setEmail] = useState(urlEmail || '');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(urlError || null);
 
-  /**
-   * Handle email/password login
-   */
-  const handleEmailLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
-    signIn({
-      email,
-      password,
-      provider: 'email'
-    }, setError)
-      .then(() => {
-        // handle redirection
-        router.push('/productos');
-      })
-      .catch(err => {
-        console.error('Error signing in with email:', err);
-        setError('Error al iniciar sesión. Inténtalo de nuevo más tarde.');
-      });
-
-    setIsLoading(false);
-  };
-
-  /**
-   * Handle other OAuth providers
-   */
-  const handleOAuthLogin = async (provider: string) => {
-    setError(null);
-    setIsLoading(true);
-
-    await signIn({
-      provider,
-      email,
-      password
-    }, setError);
-    // handle redirection
-    router.push('/productos');
-
-    setIsLoading(false);
-  };
-
+  // Check for URL parameters on component mount and when they change
   useEffect(() => {
-    if (error?.includes('500')) { // meaning that someone unregistered tries to login, redirect to register
-      router.push('/register?error=Necesitas%20registrarte%20primero');
+    if (urlError) {
+      setError(decodeURIComponent(urlError));
     }
-  }, [error]);
+    
+    if (urlEmail) {
+      setEmail(decodeURIComponent(urlEmail));
+    }
+  }, [urlError, urlEmail]);
+
+  /**
+   * Handle login for any provider
+   */
+  const handleLogin = async (e: React.FormEvent | React.MouseEvent, provider: string) => {
+    if (e) {
+      e.preventDefault(); // Prevent form submission for email login
+    }
+    
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      // Prepare login data
+      const loginData: any = {
+        provider,
+      };
+
+      // Add email/password for email provider
+      if (provider === 'email') {
+        loginData.email = email;
+        loginData.password = password;
+      }
+
+      const result = await signIn(loginData, setError);
+      
+      if (result.success) {
+        // Successful login
+        router.push(ROUTES.PRODUCTS);
+      } else if (result.redirectTo) {
+        // Need to redirect elsewhere (like register page)
+        router.push(result.redirectTo);
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.message || 'Error durante el inicio de sesión');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="login-page-container">
-      { error && 
-        <ErrorTooltip message={error} isVisible={ error.length > 0 } />
+      {error && 
+        <ErrorTooltip message={error} isVisible={error.length > 0} />
       }
 
       <Navbar />
@@ -90,7 +98,7 @@ export default function LoginPage() {
             <p>Accede a tu cuenta para obtener beneficios exclusivos</p>
           </div>
 
-          <form className="login-form" onSubmit={handleEmailLogin}>
+          <form className="login-form" onSubmit={(e) => handleLogin(e, 'email')}>
             <div className="form-group">
               <EmailOutlined className="input-icon" />
               <input 
@@ -99,6 +107,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             
@@ -110,23 +119,23 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
               />
             </div>
             
             <div className="form-footer">
-              {/* not needed yet */}
-              {/* <label className="remember-me">
-                <input type="checkbox" />
-                <span>Recordarme</span>
-              </label> */}
-              <Link href="/forgot-password" className="forgot-password">
+              <Link href={ROUTES.FORGOT_PASSWORD} className="forgot-password">
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
             
-            <button type="submit" className="login-button">
-              Iniciar Sesión
-              <ArrowForwardIos className="button-icon" />
+            <button 
+              type="submit" 
+              className="login-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Cargando..." : "Iniciar Sesión"}
+              {!isLoading && <ArrowForwardIos className="button-icon" />}
             </button>
           </form>
           
@@ -137,31 +146,16 @@ export default function LoginPage() {
           <div className="oauth-buttons">
             <button 
               className="oauth-button google-button"
-              onClick={() => handleOAuthLogin('google')}
+              onClick={(e) => handleLogin(e, 'google')}
+              disabled={isLoading}
             >
               <Google className="oauth-icon" />
               <span>Google</span>
             </button>
-            
-            {/* <button 
-              className="oauth-button apple-button"
-              onClick={() => handleOAuthLogin('apple')}
-            >
-              <Apple className="oauth-icon" />
-              <span>Apple</span>
-            </button>
-            
-            <button 
-              className="oauth-button facebook-button"
-              onClick={() => handleOAuthLogin('facebook')}
-            >
-              <Facebook className="oauth-icon" />
-              <span>Facebook</span>
-            </button> */}
           </div>
           
           <div className="signup-prompt">
-            <p>¿No tienes una cuenta? <Link href="/register">Regístrate</Link></p>
+            <p>¿No tienes una cuenta? <Link href={ROUTES.REGISTER}>Regístrate</Link></p>
           </div>
         </div>
       </div>

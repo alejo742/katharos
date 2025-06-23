@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Category, CATEGORIES } from '@/features/products/types/category';
 import useAuth from '@/features/auth/hooks/useAuth';
+import ROUTES from '@/shared/routes';
 
 interface NavbarProps {
   // Define any props that Navbar might need
@@ -42,7 +43,7 @@ export default function Navbar(props: NavbarProps) {
    * Handle search function
    */
   const handleSearch = (query: string) => {
-    router.push(`/productos?query=${encodeURIComponent(query)}`);
+    router.push(`${ROUTES.PRODUCTS}?query=${encodeURIComponent(query)}`);
   }
 
   /**
@@ -95,11 +96,11 @@ export default function Navbar(props: NavbarProps) {
           
           {showDropdown && (
             <div className="account-dropdown">
-              <Link href="/perfil" className="dropdown-item" onClick={() => setShowDropdown(false)}>
+              <Link href={ROUTES.PROFILE} className="dropdown-item" onClick={() => setShowDropdown(false)}>
                 <Person className="dropdown-item-icon" />
                 <span>Mi Perfil</span>
               </Link>
-              <Link href="/pedidos" className="dropdown-item" onClick={() => setShowDropdown(false)}>
+              <Link href={ROUTES.ORDERS} className="dropdown-item" onClick={() => setShowDropdown(false)}>
                 <ShoppingBag className="dropdown-item-icon" />
                 <span>Mis Pedidos</span>
               </Link>
@@ -114,7 +115,7 @@ export default function Navbar(props: NavbarProps) {
     }
     
     return (
-      <Link href="/login" className="navbar-login-button">
+      <Link href={ROUTES.LOGIN} className="navbar-login-button">
         <span>Iniciar sesión</span>
       </Link>
     );
@@ -122,13 +123,13 @@ export default function Navbar(props: NavbarProps) {
 
   return (
     <div className='navbar-container'>
-      <Link href="/register" className="promotional-banner">
+      <Link href={ROUTES.REGISTER} className="promotional-banner">
         <span>
           ¡10% de descuento en tu primera compra al registrarte!
         </span>
       </Link>
       <nav className='main-navbar'>
-        <Link href="/productos" className="left">
+        <Link href={ROUTES.HOME} className="left">
           <img src="brand/logo-katharos.png" alt="" />
         </Link>
         <div className="middle">
@@ -138,7 +139,7 @@ export default function Navbar(props: NavbarProps) {
           />
         </div>
         <div className="right">
-          <Link href="/cart" className="cart-button">
+          <Link href={ROUTES.CART} className="cart-button">
             <ShoppingCartOutlined className='icon'/>
             <span>Carrito</span>
           </Link>
@@ -156,7 +157,7 @@ export default function Navbar(props: NavbarProps) {
         <ul>
           <li>
             <Link 
-              href="/productos" 
+              href={ROUTES.PRODUCTS}
               className={isAllProductsActive() ? 'special-category' : ''}
             >
               Todos los Productos
@@ -165,7 +166,7 @@ export default function Navbar(props: NavbarProps) {
           {displayCategories.map((category: Category) => (
             <li key={category.id}>
               <Link 
-                href={`/productos?category=${category.id}`}
+                href={`${ROUTES.PRODUCTS}?category=${category.id}`}
                 className={isCategoryActive(category.id) ? 'special-category' : ''}
               >
                 {category.name}

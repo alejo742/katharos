@@ -12,6 +12,7 @@ import './page.css';
 import { Product } from '@/features/products/types/product';
 import { FilterList, Search, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import Link from 'next/link';
+import ROUTES from '@/shared/routes';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -130,7 +131,7 @@ export default function ProductsPage() {
           {filteredProducts.length > 0 ? (
             <div className="products-list">
               {filteredProducts.map(product => (
-                <Link href={`/productos/${product.id}`} key={product.id} className="product-card">
+                <Link href={ROUTES.PRODUCT_DETAIL(product.id)} key={product.id} className="product-card">
                   <div className="product-image">
                     <img src={product.imageUrl} alt={product.name} />
                   </div>

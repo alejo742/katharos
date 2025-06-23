@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import isUserLoggedIn from '@/features/auth/utils/isUserLoggedIn';
 import signOut from '@/features/auth/services/signOut';
 import { useRouter } from 'next/navigation';
+import ROUTES from '@/shared/routes';
 
 /**
  * Hook for managing authentication state across the application
@@ -73,7 +74,7 @@ export default function useAuth() {
     try {
       await signOut();
       setLoggedIn(false);
-      router.push('/login');
+      router.push(ROUTES.LOGIN);
       return true;
     } catch (error) {
       console.error('Error during logout:', error);

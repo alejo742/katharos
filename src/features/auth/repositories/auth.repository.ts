@@ -14,6 +14,7 @@ import {
   signInWithPopup, 
   User as FirebaseUser
 } from 'firebase/auth';
+import { SignInData } from '../services/signIn';
 
 
 export default class AuthRepository {

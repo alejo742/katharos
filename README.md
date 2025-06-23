@@ -107,4 +107,5 @@ Development is still required for the following features:
   - Order confirmation page (and email notification)
 
 - [ ] Implement user authentication (almost done)
+  - Don't register automatically when logging in
   - User registration with OAuth (Facebook and Apple)

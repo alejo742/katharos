@@ -5,7 +5,7 @@
 
 import { auth, db } from '@/lib/firebase';
 import { User } from '../types/user';
-import { getDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { getDoc, doc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 
 export default class UserRepository {
@@ -59,6 +59,20 @@ export default class UserRepository {
     }
   }
   /**
+   * Get user document by ID
+   * @param userId User's unique ID
+   * @returns User document data or null if not found
+   */
+  static async getUserById(userId: string): Promise<any | null> {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      return userDoc.exists() ? userDoc.data() : null;
+    } catch (error) {
+      console.error('Error getting user by ID:', error);
+      throw error;
+    }
+  }
+  /**
    * Deletes a user from Firestore
    * @param userId - The ID of the user to be deleted.
    * @return {Promise<void>} Returns a promise that resolves when the user is deleted successfully.
@@ -70,6 +84,24 @@ export default class UserRepository {
     } catch (error) {
       console.error('Error deleting user:', error);
       throw error; // Re-throw the error for further handling
+    }
+  }
+
+  /****** USER CHECKS ******/
+  /**
+   * Check if a user exists with the given email
+   * @param email User's email address
+   * @returns Boolean indicating if user exists
+   */
+  static async userExistsByEmail(email: string): Promise<boolean> {
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error('Error checking if user exists:', error);
+      throw error;
     }
   }
 }

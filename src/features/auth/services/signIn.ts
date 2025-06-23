@@ -16,11 +16,14 @@ import signInWithEmailAndPassword from "./signInWithEmailAndPassword";
 /**
  * Sign in with email and password or OAuth provider
  * @param {SignInData} data - The sign-in data containing email, password, and provider.
- * @returns {Promise<void>} Returns a promise that resolves when the sign-in is successful.
+ * @param {Function} setError - Function to set an error message if sign-in fails.
+ * @returns {Promise<{ success: boolean, redirectTo?: string }>} Returns a promise with success status and optional redirect URL
  */
-export default async function signIn(data: SignInData, setError: (error: string) => void): Promise<void> {
+export default async function signIn(
+  data: SignInData, 
+  setError: (error: string) => void
+): Promise<{ success: boolean, redirectTo?: string }> {
   const { email, password, provider, name } = data;
-  let success = false;
     
   /**
    * Email and Password
@@ -28,18 +31,16 @@ export default async function signIn(data: SignInData, setError: (error: string)
   if (provider === 'email' && email && password) {
     // Email and password auth logic
     try {
-      await signInWithEmailAndPassword(data);
-      success = true;
-    } catch (err: Error | any) {
-      console.error('Error signing in with email and password:', err);
-      if (err.name === 'UserNotFoundError') {
-        // Special case for user not found
-        setError('500: Usuario no encontrado. Por favor, regístrate primero.');
-        return;
+      const result = await signInWithEmailAndPassword(data);
+      if (result) {
+        return { success: true };
       }
-      else {
-        setError('Error al iniciar sesión con correo electrónico y contraseña. Inténtalo de nuevo más tarde');
+      return { success: false };
+    } catch (err: any) {
+      if (err.redirectUrl) {
+        return { success: false, redirectTo: err.redirectUrl };
       }
+      throw err;
     }
   }
 
@@ -50,10 +51,11 @@ export default async function signIn(data: SignInData, setError: (error: string)
     // Google auth logic
     try {
       await signInWithGoogle();
-      success = true;
+      return { success: true };
     } catch (err) {
       console.error('Error signing in with Google:', err);
       setError('Error al iniciar sesión con Google. Inténtalo de nuevo más tarde.');
+      return { success: false };
     }
   }
   /**
@@ -63,10 +65,11 @@ export default async function signIn(data: SignInData, setError: (error: string)
     // Apple auth logic
     try {
       await signInWithApple();
-      success = true;
+      return { success: true };
     } catch (err) {
       console.error('Error signing in with Apple:', err);
       setError('Error al iniciar sesión con Apple. Inténtalo de nuevo más tarde.');
+      return { success: false };
     }
   }
   /**
@@ -76,24 +79,18 @@ export default async function signIn(data: SignInData, setError: (error: string)
     // Facebook auth logic
     try {
       await signInWithFacebook();
-      success = true;
+      return { success: true };
     } catch (err) {
       console.error('Error signing in with Facebook:', err);
       setError('Error al iniciar sesión con Facebook. Inténtalo de nuevo más tarde.');
+      return { success: false };
     }
   }
   /**
-   * Error
+   * Error, but shouldn't happen
    */
   else {
     console.error('Unsupported provider:', provider);
-  }
-
-  // If sign-in was successful, redirect
-  if (success) {
-    return;
-  } else {
-    // Handle failure case if needed
-    throw new Error('Sign-in failed');
+    return { success: false };
   }
 }
