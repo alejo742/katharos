@@ -13,6 +13,7 @@ const ROUTES = {
   CHECKOUT: '/checkout',
   PROFILE: '/perfil',
   FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
   TERMS: '/legal',
   PRIVACY_POLICY: '/legal',
 };

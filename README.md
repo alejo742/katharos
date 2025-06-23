@@ -106,6 +106,5 @@ Development is still required for the following features:
   - Implement payment processing (first, Yape/Plin, then Stripe or similar)
   - Order confirmation page (and email notification)
 
-- [ ] Implement user authentication (almost done)
-  - Don't register automatically when logging in
+- [ ] Finish user authentication (almost done)
   - User registration with OAuth (Facebook and Apple)

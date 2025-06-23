@@ -12,7 +12,10 @@ import {
   FacebookAuthProvider, 
   OAuthProvider,
   signInWithPopup, 
-  User as FirebaseUser
+  User as FirebaseUser,
+  sendPasswordResetEmail,
+  confirmPasswordReset,
+  verifyPasswordResetCode
 } from 'firebase/auth';
 import { SignInData } from '../services/signIn';
 
@@ -90,5 +93,37 @@ export default class AuthRepository {
       console.error('Error signing in with Apple:', error);
       throw error; // Re-throw the error for further handling
     }
+  }
+
+  /****** RESET LOGIC ******/
+  /**
+   * Send password reset email
+   * @param {string} email - The user's email address.
+   * @returns {Promise<void>} Returns a promise that resolves when the email is sent.
+   */
+  static async sendPasswordResetEmail(email: string): Promise<void> {
+    const actionCodeSettings = {
+      // Specify your app's reset password page
+      url: `${window.location.origin}/reset-password`,
+      // This is the key setting that was missing
+      handleCodeInApp: true
+    };
+    
+    return sendPasswordResetEmail(auth, email, actionCodeSettings);
+  }
+  /**
+   * Confirm password reset with code
+   * @param {string} code - The password reset code sent to the user's email.
+   * @param {string} newPassword - The new password to set for the user.
+   */
+  static async confirmPasswordReset(code: string, newPassword: string): Promise<void> {
+    return confirmPasswordReset(auth, code, newPassword);
+  }
+  /**
+   * Verify password reset code
+   * @param {string} code - The password reset code to verify.
+   */
+  static async verifyPasswordResetCode(code: string): Promise<string> {
+    return verifyPasswordResetCode(auth, code);
   }
 }
