@@ -8,7 +8,7 @@ import {
   CheckCircle,
   RemoveCircle
 } from '@mui/icons-material';
-import { CATEGORIES } from '@/features/products/types/category';
+import { getAllCategories, getCategoryName } from '@/features/products/types/category';
 import { Product } from '@/features/products/types/product';
 import { createProduct } from '../../services/create/createProduct';
 import { updateProduct } from '../../services/update/updateProduct';
@@ -28,6 +28,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId }) => {
   const { user, loading: userLoading } = useAuth();
   const router = useRouter();
   const isEditMode = Boolean(productId && productId !== 'create');
+  
+  // Get categories for the dropdown
+  const categories = getAllCategories().filter(cat => cat.id !== 'all');
   
   // Form state
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -378,7 +381,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId }) => {
                 disabled={loading}
               >
                 <option value="">Seleccionar categoría</option>
-                {CATEGORIES.filter(cat => cat.id !== 'all').map(category => (
+                {categories.map(category => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
@@ -574,9 +577,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId }) => {
                 )}
                 
                 <div className="preview-category">
-                  <strong>Categoría:</strong> {
-                    CATEGORIES.find(c => c.id === formData.category)?.name || 'Sin categoría'
-                  }
+                  <strong>Categoría:</strong> {getCategoryName(formData.category || '')}
                 </div>
                 
                 <button className="preview-buy-button" disabled>

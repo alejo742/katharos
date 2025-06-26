@@ -12,7 +12,7 @@ import useAuth from '@/features/auth/hooks/useAuth';
 import { checkAdminStatus } from '@/features/admin/services/checkAdminStatus';
 import ROUTES from '@/shared/routes';
 import './page.css';
-import { CATEGORIES } from '@/features/products/types/category';
+import { getCategoryName } from '@/features/products/types/category';
 
 export default function AdminProductsPage() {
   const router = useRouter();
@@ -204,10 +204,8 @@ export default function AdminProductsPage() {
                       </td>
                       <td>{product.name}</td>
                       <td>
-                        {/* Get the name of the category */}
-                        {CATEGORIES.filter((categoryElement) => {
-                          return categoryElement.slug === product.category;
-                        })[0].name}
+                        {/* Get the name of the category using the helper function */}
+                        {getCategoryName(product.category)}
                       </td>
                       <td>S/ {product.price.toFixed(2)}</td>
                       <td>
