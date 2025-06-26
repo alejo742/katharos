@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { LockOutlined, ArrowForwardIos } from '@mui/icons-material';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -10,7 +10,8 @@ import ErrorTooltip from '@/shared/components/ErrorTooltip/ErrorTooltip';
 import ROUTES from '@/shared/routes';
 import './page.css';
 
-export default function ResetPasswordPage() {
+// Content component that uses searchParams
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -139,5 +140,23 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Simple loading fallback
+function ResetPasswordPageLoading() {
+  return (
+    <div className="reset-password-page-loading">
+      <Navbar />
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordPageLoading />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

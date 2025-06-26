@@ -3,7 +3,7 @@
  */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/shared/components/Navbar/Navbar';
@@ -22,7 +22,8 @@ import ROUTES from '@/shared/routes';
 import useAuth from '@/features/auth/hooks/useAuth';
 import LoadingOverlay from '@/shared/components/LoadingOverlay/LoadingOverlay';
 
-export default function RegisterPage() {
+// Content component that uses searchParams
+function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading } = useAuth();
@@ -241,5 +242,23 @@ export default function RegisterPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Simple loading fallback
+function RegisterPageLoading() {
+  return (
+    <div className="register-page-loading">
+      <Navbar />
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<RegisterPageLoading />}>
+      <RegisterContent />
+    </Suspense>
   );
 }

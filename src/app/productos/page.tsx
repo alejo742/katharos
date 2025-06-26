@@ -4,7 +4,7 @@
  */
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/shared/components/Navbar/Navbar';
 import LoadingOverlay from '@/shared/components/LoadingOverlay/LoadingOverlay';
@@ -18,7 +18,8 @@ import ROUTES from '@/shared/routes';
 // Number of products per page
 const PRODUCTS_PER_PAGE = 16;
 
-export default function ProductsPage() {
+// Component that uses searchParams
+function ProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -294,5 +295,25 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function ProductsPageLoading() {
+  return (
+    <div className="products-page-loading">
+      <Navbar />
+      <div className="products-hero-loading"></div>
+      <div className="products-content-loading"></div>
+    </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsPageLoading />}>
+      <ProductsContent />
+    </Suspense>
   );
 }

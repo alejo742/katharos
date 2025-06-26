@@ -9,6 +9,22 @@
   --colorSecondaryRed: #E56F56;
 }
 
+/* Loading states for products page */
+.products-page-loading {
+  min-height: 100vh;
+  width: 100%;
+}
+.products-hero-loading {
+  height: 200px;
+  width: 100%;
+  background-color: var(--colorPrimaryDark, #333);
+}
+.products-content-loading {
+  min-height: 400px;
+  width: 100%;
+  background-color: var(--colorPrimaryLight, #f8f8f8);
+}
+
 .products-page-container {
   min-height: 100vh;
   background-color: var(--colorPrimary);

@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import { ShoppingCartOutlined, KeyboardArrowDown, Person, ExitToApp, ShoppingBag } from '@mui/icons-material';
 import './Navbar.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { getAllCategories, getCategoryName } from '@/features/products/types/category';
+import { getAllCategories } from '@/features/products/types/category';
 import useAuth from '@/features/auth/hooks/useAuth';
 import ROUTES from '@/shared/routes';
 import signOutUser from '@/features/auth/services/signOut';
@@ -16,7 +16,7 @@ interface NavbarProps {
   // Define any props that Navbar might need
 }
 
-export default function Navbar(props: NavbarProps) {
+function NavbarContent(props: NavbarProps) {
   const { user, loading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -188,5 +188,14 @@ export default function Navbar(props: NavbarProps) {
         </ul>
       </div>
     </div>
+  );
+}
+
+// Main Navbar component that wraps NavbarContent in a Suspense boundary
+export default function Navbar(props: NavbarProps) {
+  return (
+    <Suspense fallback={<div className="navbar-loading"></div>}>
+      <NavbarContent {...props} />
+    </Suspense>
   );
 }

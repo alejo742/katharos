@@ -5,6 +5,12 @@
   --colorSecondaryGreen: #086e60;
   --colorSecondaryRed: #E56F56;
 }
+/* Loading state for reset password page */
+.reset-password-page-loading {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--colorPrimaryLight, #f8f8f8);
+}
 .reset-password-page-container {
   min-height: 100vh;
   display: flex;

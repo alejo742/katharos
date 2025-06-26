@@ -3,7 +3,7 @@
  */
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/shared/components/Navbar/Navbar';
@@ -21,7 +21,8 @@ import ROUTES from '@/shared/routes';
 import useAuth from '@/features/auth/hooks/useAuth';
 import LoadingOverlay from '@/shared/components/LoadingOverlay/LoadingOverlay';
 
-export default function LoginPage() {
+// Content component that uses searchParams
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading } = useAuth();
@@ -174,5 +175,19 @@ export default function LoginPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Simple loading fallback
+function LoginPageLoading() {
+  return <div className="login-page-loading"></div>;
+}
+
+// Main component with Suspense boundary
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageLoading />}>
+      <LoginContent />
+    </Suspense>
   );
 }
