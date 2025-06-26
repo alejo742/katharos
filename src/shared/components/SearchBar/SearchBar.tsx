@@ -7,7 +7,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SearchOutlined } from "@mui/icons-material";
 import { Product } from "@/features/products/types/product";
-import { getProductsByQuery } from "@/features/products/services/getProductsByQuery";
+import { getProductsByQuery } from "@/features/products/services/get/getProductsByQuery";
 import SearchCard from "./SearchCard/SearchCard";
 import "./SearchBar.css";
 
@@ -92,7 +92,6 @@ export default function SearchBar({ placeholder = "Search...", onSearch }: Searc
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setQuery(value);
-        // Don't call onSearch here anymore - it will be called after debounce
     };
 
     return (
@@ -106,6 +105,7 @@ export default function SearchBar({ placeholder = "Search...", onSearch }: Searc
                     placeholder={placeholder}
                     className="search-input"
                     onFocus={() => query.trim().length >= 2 && setShowDropdown(true)}
+                    suppressHydrationWarning
                 />
             </div>
             

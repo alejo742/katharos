@@ -19,10 +19,13 @@ import ErrorTooltip from '@/shared/components/ErrorTooltip/ErrorTooltip';
 import { useRouter } from 'next/navigation';
 import './page.css';
 import ROUTES from '@/shared/routes';
+import useAuth from '@/features/auth/hooks/useAuth';
+import LoadingOverlay from '@/shared/components/LoadingOverlay/LoadingOverlay';
 
 export default function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, loading } = useAuth();
   
   // Get URL parameters
   const urlError = searchParams.get('error');
@@ -35,6 +38,13 @@ export default function RegisterPage() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(urlError || null);
+  
+  // Redirect to profile if already logged in
+  useEffect(() => {
+    if (!loading && user) {
+      router.push(ROUTES.PROFILE);
+    }
+  }, [loading, user, router]);
   
   // Check for URL parameters on component mount and when they change
   useEffect(() => {
@@ -125,108 +135,111 @@ export default function RegisterPage() {
       }
       
       <Navbar />
+      <LoadingOverlay isVisible={loading} />
       
-      <div className="register-section">
-        <div className="register-container">
-          <div className="register-header">
-            <h1>Crear Cuenta</h1>
-            <p>Regístrate para obtener beneficios exclusivos</p>
-          </div>
+      {(!loading && !user) && (
+        <div className="register-section">
+          <div className="register-container">
+            <div className="register-header">
+              <h1>Crear Cuenta</h1>
+              <p>Regístrate para obtener beneficios exclusivos</p>
+            </div>
 
-          <form className="register-form" onSubmit={(e) => handleRegister(e, 'email')}>
-            <div className="form-group">
-              <PersonOutlineOutlined className="input-icon" />
-              <input 
-                type="text" 
-                placeholder="Nombre" 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+            <form className="register-form" onSubmit={(e) => handleRegister(e, 'email')}>
+              <div className="form-group">
+                <PersonOutlineOutlined className="input-icon" />
+                <input 
+                  type="text" 
+                  placeholder="Nombre" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="form-group">
+                <EmailOutlined className="input-icon" />
+                <input 
+                  type="email" 
+                  placeholder="Correo electrónico" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="form-group">
+                <LockOutlined className="input-icon" />
+                <input 
+                  type="password" 
+                  placeholder="Contraseña" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="form-group">
+                <LockOutlined className="input-icon" />
+                <input 
+                  type="password" 
+                  placeholder="Confirmar contraseña" 
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <label className="terms-checkbox">
+                <input 
+                  type="checkbox" 
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  required
+                  disabled={isLoading}
+                />
+                <span>
+                  Acepto los <Link href={ROUTES.TERMS}>Términos y Condiciones</Link> y la <Link href={ROUTES.PRIVACY_POLICY}>Política de Privacidad</Link>
+                </span>
+              </label>
+              
+              <button 
+                type="submit" 
+                className="register-button"
+                disabled={!acceptTerms || isLoading}
+              >
+                {isLoading ? "Procesando..." : "Crear Cuenta"}
+                {!isLoading && <ArrowForwardIos className="button-icon" />}
+              </button>
+            </form>
+            
+            <div className="register-divider">
+              <span>o regístrate con</span>
             </div>
             
-            <div className="form-group">
-              <EmailOutlined className="input-icon" />
-              <input 
-                type="email" 
-                placeholder="Correo electrónico" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+            <div className="oauth-buttons">
+              <button 
+                className="oauth-button google-button"
+                onClick={(e) => handleRegister(e, 'google')}
                 disabled={isLoading}
-              />
+              >
+                <Google className="oauth-icon" />
+                <span>Google</span>
+              </button>
             </div>
             
-            <div className="form-group">
-              <LockOutlined className="input-icon" />
-              <input 
-                type="password" 
-                placeholder="Contraseña" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                disabled={isLoading}
-              />
+            <div className="login-prompt">
+              <p>¿Ya tienes una cuenta? <Link href={ROUTES.LOGIN}>Iniciar sesión</Link></p>
             </div>
-            
-            <div className="form-group">
-              <LockOutlined className="input-icon" />
-              <input 
-                type="password" 
-                placeholder="Confirmar contraseña" 
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={6}
-                disabled={isLoading}
-              />
-            </div>
-            
-            <label className="terms-checkbox">
-              <input 
-                type="checkbox" 
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                required
-                disabled={isLoading}
-              />
-              <span>
-                Acepto los <Link href={ROUTES.TERMS}>Términos y Condiciones</Link> y la <Link href={ROUTES.PRIVACY_POLICY}>Política de Privacidad</Link>
-              </span>
-            </label>
-            
-            <button 
-              type="submit" 
-              className="register-button"
-              disabled={!acceptTerms || isLoading}
-            >
-              {isLoading ? "Procesando..." : "Crear Cuenta"}
-              {!isLoading && <ArrowForwardIos className="button-icon" />}
-            </button>
-          </form>
-          
-          <div className="register-divider">
-            <span>o regístrate con</span>
-          </div>
-          
-          <div className="oauth-buttons">
-            <button 
-              className="oauth-button google-button"
-              onClick={(e) => handleRegister(e, 'google')}
-              disabled={isLoading}
-            >
-              <Google className="oauth-icon" />
-              <span>Google</span>
-            </button>
-          </div>
-          
-          <div className="login-prompt">
-            <p>¿Ya tienes una cuenta? <Link href={ROUTES.LOGIN}>Iniciar sesión</Link></p>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -292,3 +292,70 @@
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
   }
 }
+
+/* Pagination styles */
+.pagination-controls {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-page, 
+.pagination-arrow {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination-page:hover, 
+.pagination-arrow:hover {
+  background-color: #f5f5f5;
+}
+
+.pagination-page.active {
+  background-color: var(--colorSecondaryGreen);
+  color: white;
+  border-color: var(--colorSecondaryGreen);
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+}
+
+.load-more-button {
+  padding: 12px 24px;
+  background-color: var(--colorSecondaryGreen);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.load-more-button:hover {
+  background-color: #065a4e;
+}

@@ -10,13 +10,14 @@ import { useSearchParams } from 'next/navigation';
 import { Category, CATEGORIES } from '@/features/products/types/category';
 import useAuth from '@/features/auth/hooks/useAuth';
 import ROUTES from '@/shared/routes';
+import signOutUser from '@/features/auth/services/signOut';
 
 interface NavbarProps {
   // Define any props that Navbar might need
 }
 
 export default function Navbar(props: NavbarProps) {
-  const { loggedIn, loading: authLoading, logout } = useAuth();
+  const { user, loading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -50,7 +51,8 @@ export default function Navbar(props: NavbarProps) {
    * Handle logout
    */
   const handleLogout = async() => {
-    await logout();
+    await signOutUser();
+    router.push(ROUTES.LOGIN); // Redirect to login after logout
     setShowDropdown(false);
   }
 
@@ -73,9 +75,13 @@ export default function Navbar(props: NavbarProps) {
   // Get display categories (exclude 'all' since we handle it separately)
   const displayCategories = CATEGORIES.filter(category => category.id !== 'all');
 
+  // Get user display name
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Usuario';
+
   // Render the appropriate authentication button based on state
   const renderAuthButton = () => {
-    if (authLoading) {
+    // Show loading state if authentication is still being determined
+    if (loading) {
       return (
         <button className="navbar-login-button loading-button" disabled>
           <span>Cargando...</span>
@@ -83,14 +89,15 @@ export default function Navbar(props: NavbarProps) {
       );
     }
     
-    if (loggedIn) {
+    // User is logged in
+    if (user) {
       return (
         <div className="account-dropdown-container" ref={dropdownRef}>
           <button 
             className="navbar-login-button account-button"
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            <span>Mi cuenta</span>
+            <span>Mi Cuenta</span>
             <KeyboardArrowDown className="dropdown-icon" />
           </button>
           
@@ -114,13 +121,14 @@ export default function Navbar(props: NavbarProps) {
       );
     }
     
+    // Not logged in
     return (
       <Link href={ROUTES.LOGIN} className="navbar-login-button">
         <span>Iniciar sesión</span>
       </Link>
     );
   };
-
+  
   return (
     <div className='navbar-container'>
       <Link href={ROUTES.REGISTER} className="promotional-banner">
@@ -130,7 +138,7 @@ export default function Navbar(props: NavbarProps) {
       </Link>
       <nav className='main-navbar'>
         <Link href={ROUTES.HOME} className="left">
-          <img src="brand/logo-katharos.png" alt="" />
+          <img src="/brand/logo-katharos.png" alt="Katharos Logo" />
         </Link>
         <div className="middle">
           <SearchBar
@@ -176,5 +184,5 @@ export default function Navbar(props: NavbarProps) {
         </ul>
       </div>
     </div>
-  )
+  );
 }

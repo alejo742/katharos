@@ -4,30 +4,36 @@
  */
 
 import { getDoc, doc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, auth } from "@/lib/firebase";
 
 
 export default class AdminRepository {
   /**
-   * Determine if user is an admin by its isAdmin field
-   * @param userId - The ID of the user to check.
-   * @return {Promise<boolean>} Returns a promise that resolves to true if the user is an admin, otherwise false.
+   * Checks if a user has admin privileges
+   * @returns Promise<boolean> - True if the user is an admin
    */
-  static async isUserAdmin(userId: string): Promise<boolean> {
+  static async checkAdminStatus(): Promise<boolean> {
     try {
-      const userDocRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        return userData?.isAdmin || false; // Return true if isAdmin is true, otherwise false
-      } else {
-        console.warn('No user data found for user ID:', userId);
-        return false; // Default to false if no user data exists
+      const currentUser = auth.currentUser;
+      
+      // If there's no authenticated user, they're not an admin
+      if (!currentUser) {
+        return false;
       }
+      
+      // Get the user document
+      const userRef = doc(db, "users", currentUser.uid);
+      const userSnap = await getDoc(userRef);
+      
+      // Check if the user exists and has the isAdmin flag set to true
+      if (userSnap.exists()) {
+        return userSnap.data().isAdmin === true;
+      }
+      
+      return false;
     } catch (error) {
-      console.error('Error checking admin status:', error);
-      throw error; // Re-throw the error for further handling
+      console.error("Error checking admin status:", error);
+      return false;
     }
   }
 }

@@ -11,9 +11,9 @@ export default function SearchCard({ product }: { product: Product }) {
     return (
         <div className="search-card">
             <div className="search-card-image">
-                {product.imageUrl && (
+                {product.images[0] && (
                     <Image 
-                        src={product.imageUrl} 
+                        src={product.images[0]} 
                         alt={product.name}
                         width={50}
                         height={50}

@@ -10,6 +10,8 @@
 	--colorSecondaryRed: #E56F56;
 }
 
+
+
 /* Document
    ========================================================================== */
    *, *::before, *::after {
@@ -297,6 +299,7 @@
     [type="radio"] {
       box-sizing: border-box; /* 1 */
       padding: 0; /* 2 */
+      accent-color: var(--colorSecondaryGreen);
     }
     
     /**

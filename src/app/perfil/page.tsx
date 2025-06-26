@@ -8,50 +8,54 @@ import useAuth from '@/features/auth/hooks/useAuth';
 import { checkAdminStatus } from '@/features/admin/services/checkAdminStatus';
 import { User } from '@/features/auth/types/user';
 import { getUserProfile } from '@/features/auth/services/user/getUserProfile';
+import AdminDashboard from '@/features/admin/components/AdminDashboard/AdminDashboard';
 import './page.css';
 import { Person, Email, CalendarToday, AdminPanelSettings } from '@mui/icons-material';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { loggedIn, loading: authLoading } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const { user: authUser, loading } = useAuth();
+  const [profileData, setProfileData] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState('');
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
-  // Fetch user data when component mounts
+  // Redirect if not logged in
   useEffect(() => {
-    const fetchUserData = async () => {
-      // Wait for auth to initialize
-      if (authLoading) return;
+    if (!loading && !authUser) {
+      router.push(`/login?error=${encodeURIComponent('Debes iniciar sesión para acceder a tu perfil.')}`);
+    }
+  }, [authUser, loading, router]);
 
-      // If not logged in, redirect to login
-      if (!loggedIn) {
-        router.push('/login');
-        return;
-      }
-
-      setLoading(true);
+  // Fetch user data and admin status when auth user is available
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!authUser) return;
+      
+      setIsLoadingProfile(true);
       try {
-        // Get user profile data
+        // Always fetch user profile data
         const userData = await getUserProfile();
-        setUser(userData);
+        setProfileData(userData);
 
-        // Check if user is admin
-        if (userData?.email) {
-          const adminStatus = await checkAdminStatus(userData.email);
+        // Check admin status
+        try {
+          const adminStatus = await checkAdminStatus();
           setIsAdmin(adminStatus);
+        } catch (adminError) {
+          console.error('Error checking admin status:', adminError);
+          setIsAdmin(false);
         }
       } catch (err) {
         console.error('Error fetching user data:', err);
         setError('No se pudo cargar la información del perfil. Por favor, intenta de nuevo más tarde.');
       } finally {
-        setLoading(false);
+        setIsLoadingProfile(false);
       }
     };
 
-    fetchUserData();
-  }, [loggedIn, authLoading, router]);
+    fetchProfileData();
+  }, [authUser]);
 
   // Format date for display
   const formatDate = (dateValue: any) => {
@@ -92,10 +96,28 @@ export default function ProfilePage() {
     }
   };
 
+  // Show loading during authentication and profile loading
+  const isPageLoading = loading || isLoadingProfile;
+
+  // If still loading or user not authenticated, show loading or nothing
+  if (loading) {
+    return (
+      <div className="profile-page-container">
+        <Navbar />
+        <LoadingOverlay isVisible={true} />
+      </div>
+    );
+  }
+
+  // If not loading and no user, don't render anything (redirection will happen)
+  if (!authUser) {
+    return null;
+  }
+
   return (
     <div className="profile-page-container">
       <Navbar />
-      <LoadingOverlay isVisible={loading} />
+      <LoadingOverlay isVisible={isLoadingProfile} />
 
       <div className="profile-content">
         <div className="profile-header">
@@ -107,14 +129,14 @@ export default function ProfilePage() {
           <div className="error-container">
             <p>{error}</p>
           </div>
-        ) : user ? (
+        ) : profileData ? (
           <div className="profile-card-container">
             <div className="profile-card">
               <div className="profile-card-header">
                 <div className="profile-avatar">
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                  {profileData.name ? profileData.name.charAt(0).toUpperCase() : 'U'}
                 </div>
-                <h2>{user.name}</h2>
+                <h2>{profileData.name || authUser.displayName || 'Usuario'}</h2>
               </div>
               
               <div className="profile-info-section">
@@ -122,7 +144,7 @@ export default function ProfilePage() {
                   <Person className="profile-info-icon" />
                   <div className="profile-info-content">
                     <p className="profile-info-label">Nombre completo</p>
-                    <p className="profile-info-value">{user.name}</p>
+                    <p className="profile-info-value">{profileData.name || authUser.displayName || 'No disponible'}</p>
                   </div>
                 </div>
                 
@@ -130,7 +152,7 @@ export default function ProfilePage() {
                   <Email className="profile-info-icon" />
                   <div className="profile-info-content">
                     <p className="profile-info-label">Correo electrónico</p>
-                    <p className="profile-info-value">{user.email}</p>
+                    <p className="profile-info-value">{profileData.email || authUser.email}</p>
                   </div>
                 </div>
                 
@@ -138,7 +160,9 @@ export default function ProfilePage() {
                   <CalendarToday className="profile-info-icon" />
                   <div className="profile-info-content">
                     <p className="profile-info-label">Fecha de registro</p>
-                    <p className="profile-info-value">{formatDate(user.createdAt)}</p>
+                    <p className="profile-info-value">
+                      {profileData.createdAt ? formatDate(profileData.createdAt) : 'Fecha no disponible'}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -151,7 +175,7 @@ export default function ProfilePage() {
                   <h3>Panel de Administrador</h3>
                 </div>
                 <div className="admin-content">
-                  <p>Tienes acceso a funciones de administrador. Las opciones de administración estarán disponibles próximamente.</p>
+                  <AdminDashboard />
                 </div>
               </div>
             )}

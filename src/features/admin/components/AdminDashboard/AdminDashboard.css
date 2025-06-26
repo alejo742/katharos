@@ -1,0 +1,215 @@
+:root {
+  --colorPrimary: #F2F0EA;
+  --colorPrimaryDark: #010101;
+  --colorSecondaryGray: #A4A4A4;
+  --colorSecondaryGreen: #086e60;
+  --colorSecondaryRed: #E56F56;
+}
+/**
+ * Admin Dashboard Styles
+ */
+
+/* Dashboard Container */
+.admin-dashboard {
+  margin-top: 1rem;
+}
+
+/* Grid Layout */
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+  gap: 2.5rem;
+}
+
+/* Admin Card Styles */
+.admin-card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-0.3rem);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+}
+
+/* Card Headers (different colors for different cards) */
+.admin-card-header {
+  padding: 1.8rem 2rem;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.admin-card.products .admin-card-header {
+  background-color: var(--colorSecondaryGreen);
+}
+
+.admin-card.orders .admin-card-header {
+  background-color: #C27C88;
+}
+
+.admin-card.users .admin-card-header {
+  background-color: #5D54A4;
+}
+
+.admin-card-icon {
+  font-size: 2.2rem !important;
+  margin-right: 1.2rem;
+}
+
+.admin-card-header h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Card Content */
+.admin-card-body {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Statistics */
+.admin-card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex: 1;
+}
+
+.admin-stat {
+  display: flex;
+  align-items: baseline;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-stat:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.admin-stat-value {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--colorPrimaryDark);
+  margin-right: 1rem;
+}
+
+.admin-stat-label {
+  font-size: 1.4rem;
+  color: var(--colorSecondaryGray);
+}
+
+/* Action Buttons */
+.admin-card-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.admin-card-action {
+  padding: 1rem 1.5rem;
+  border-radius: 0.6rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  flex: 1;
+  text-align: center;
+}
+
+.admin-card-action.primary {
+  background-color: var(--colorSecondaryGreen);
+  color: white;
+}
+
+.admin-card-action.primary:hover {
+  background-color: #065a4f;
+}
+
+.admin-card.products .admin-card-action.primary {
+  background-color: var(--colorSecondaryGreen);
+}
+
+.admin-card.orders .admin-card-action.primary {
+  background-color: #B26C78;
+}
+
+.admin-card.users .admin-card-action.primary {
+  background-color: #504994;
+}
+
+.admin-card-action.secondary {
+  background-color: transparent;
+  color: var(--colorPrimaryDark);
+  border: 1px solid #e0e0e0;
+}
+
+.admin-card-action.secondary:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Loading State */
+.admin-card-loading {
+  min-height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loading-dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background-color: var(--colorSecondaryGray);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.8); }
+}
+
+/* Responsive Adjustments */
+@media only screen and (max-width: 768px) {
+  .admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-card-header {
+    padding: 1.5rem;
+  }
+  
+  .admin-card-body {
+    padding: 1.5rem;
+  }
+  
+  .admin-stat-value {
+    font-size: 1.8rem;
+  }
+}

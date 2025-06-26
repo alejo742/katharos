@@ -145,6 +145,7 @@
 .admin-header h3 {
   font-size: 2rem;
   font-weight: 600;
+  margin: 0;
 }
 
 .admin-content {
@@ -155,6 +156,24 @@
   font-size: 1.6rem;
   color: var(--colorPrimaryDark);
   line-height: 1.6;
+}
+
+/* Admin Dashboard enhancements */
+.admin-section .admin-content {
+  padding: 3rem;
+}
+
+.admin-section .admin-dashboard {
+  margin-top: 0;
+}
+
+.admin-section .admin-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-section .admin-card:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.1);
 }
 
 /* Error Container */
@@ -192,6 +211,14 @@
   }
   
   .profile-info-section {
+    padding: 2rem;
+  }
+  
+  .admin-header {
+    padding: 1.5rem 2rem;
+  }
+  
+  .admin-content {
     padding: 2rem;
   }
 }
