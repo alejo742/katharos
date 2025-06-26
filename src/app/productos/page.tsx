@@ -14,6 +14,7 @@ import { getAllProducts } from '@/features/products/services/get/getAllProducts'
 import { FilterList, Search, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import Link from 'next/link';
 import ROUTES from '@/shared/routes';
+import { getCategoryName } from '@/features/products/types/category';
 
 // Number of products per page
 const PRODUCTS_PER_PAGE = 16;
@@ -96,11 +97,6 @@ function ProductsContent() {
     router.push(`${ROUTES.PRODUCTS}?${urlParams.toString()}`);
   };
   
-  // Handler for category filter change
-  const handleCategoryChange = (category: string) => {
-    updateUrlParams({ category, page: 1 });
-  };
-  
   // Handler for price range change
   const handlePriceRangeChange = (newRange: [number, number]) => {
     setPriceRange(newRange);
@@ -156,19 +152,6 @@ function ProductsContent() {
           
           {isFiltersOpen && (
             <div className="filter-content">
-              <div className="category-filters">
-                <h4>Categorías</h4>
-                <ul>
-                  <li 
-                    className={categoryParam === 'all' ? 'active' : ''}
-                    onClick={() => handleCategoryChange('all')}
-                  >
-                    Todos los productos
-                  </li>
-                  {/* Add your categories here */}
-                </ul>
-              </div>
-              
               <div className="price-filters">
                 <h4>Precio</h4>
                 <div className="price-slider-container">
@@ -196,7 +179,7 @@ function ProductsContent() {
               {queryParam 
                 ? `Resultados para "${queryParam}"` 
                 : categoryParam !== 'all' 
-                  ? `Categoría: ${categoryParam}` 
+                  ? `Categoría: ${getCategoryName(categoryParam)}` 
                   : 'Todos los productos'
               }
             </h3>
@@ -215,7 +198,7 @@ function ProductsContent() {
                     </div>
                     <div className="product-info">
                       <h3 className="product-name">{product.name}</h3>
-                      <p className="product-category">{product.category}</p>
+                      <p className="product-category">{getCategoryName(product.category)}</p>
                       <div className="product-price-container">
                         {product.salePrice ? (
                           <>

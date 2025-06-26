@@ -10,7 +10,7 @@ const ROUTES = {
   PRODUCT_DETAIL: (id: string) => `/productos/${id}`,
   CART: '/carrito',
   ORDERS: '/pedidos',
-  CHECKOUT: '/checkout',
+  CHECKOUT: '/pago',
   PROFILE: '/perfil',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',

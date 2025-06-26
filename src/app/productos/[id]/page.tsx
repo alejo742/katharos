@@ -10,17 +10,18 @@ import {
   CheckCircle, 
   RemoveCircle, 
   ArrowBack, 
-  AddShoppingCart,
-  FavoriteBorder,
-  Share
+  AddShoppingCart
 } from '@mui/icons-material';
 import ROUTES from '@/shared/routes';
 import { getCategoryName } from '@/features/products/types/category';
 import './page.css';
+import { useCart } from '@/features/cart/context/CartContext';
+import { CartItem } from '@/features/cart/types/cart';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { addToCart } = useCart();
   const productId = params.id as string;
   
   const [product, setProduct] = useState<Product | null>(null);
@@ -86,11 +87,25 @@ export default function ProductDetailPage() {
   
   // Handle add to cart
   const handleAddToCart = () => {
-    // TODO: Implement add to cart functionality
-    console.log('Adding to cart:', product?.id, 'Quantity:', quantity);
-    
-    // For now, just show an alert
-    alert(`Producto añadido al carrito: ${product?.name} (x${quantity})`);
+    if (product) {
+      // Create cart item
+      const cartItem: CartItem = {
+        productId: product.id,
+        quantity: quantity,
+        name: product.name,
+        price: product.price,
+        salePrice: product.salePrice,
+        image: product.images[0],
+        category: getCategoryName(product.category), // Get display name
+        stockQuantity: product.stockQuantity
+      };
+      
+      // Add to cart
+      addToCart(cartItem);
+      
+      // Show feedback
+      alert(`Producto añadido al carrito: ${product.name} (x${quantity})`);
+    }
   };
   
   // Format date for display
@@ -215,10 +230,8 @@ export default function ProductDetailPage() {
                   )}
                 </div>
                 
-                <div className="product-short-description">
-                  <p>{product.description.slice(0, 150)}
-                    {product.description.length > 150 ? '...' : ''}
-                  </p>
+                <div className="product-description">
+                  <p>{product.description}</p>
                 </div>
                 
                 {product.stockQuantity > 0 && (
@@ -256,82 +269,47 @@ export default function ProductDetailPage() {
                   </div>
                 )}
                 
-                <div className="product-meta">
-                  <div className="product-category">
-                    <span className="meta-label">Categoría:</span>
-                    <span className="meta-value">{getCategoryName(product.category)}</span>
-                  </div>
-                  
-                  {product.tags && product.tags.length > 0 && (
-                    <div className="product-tags">
-                      <span className="meta-label">Etiquetas:</span>
-                      <div className="tags-container">
-                        {product.tags.map((tag, index) => (
-                          <span key={index} className="product-tag">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="social-actions">
-                  <button className="social-button">
-                    <FavoriteBorder /> Favorito
-                  </button>
-                  <button className="social-button">
-                    <Share /> Compartir
-                  </button>
+                <div className="product-category-container">
+                  <span className="category-label">Categoría:</span>
+                  <span className="category-value">{getCategoryName(product.category)}</span>
                 </div>
               </div>
             </div>
             
-            <div className="product-details-tabs">
-              <div className="tab-content">
-                <div className="description-section">
-                  <h2>Descripción del Producto</h2>
-                  <div className="description-content">
-                    {product.description.split('\n').map((paragraph, idx) => (
-                      <p key={idx}>{paragraph}</p>
-                    ))}
-                  </div>
+            <div className="product-specifications">
+              <h2>Especificaciones del Producto</h2>
+              <div className="specifications-table">
+                <div className="spec-row">
+                  <div className="spec-label">Categoría</div>
+                  <div className="spec-value">{getCategoryName(product.category)}</div>
                 </div>
                 
-                <div className="specifications-section">
-                  <h2>Especificaciones</h2>
-                  <div className="specifications-table">
-                    <div className="spec-row">
-                      <div className="spec-label">Categoría</div>
-                      <div className="spec-value">{getCategoryName(product.category)}</div>
+                {product.stockQuantity !== undefined && (
+                  <div className="spec-row">
+                    <div className="spec-label">Disponibilidad</div>
+                    <div className="spec-value">
+                      {product.stockQuantity > 0 
+                        ? `${product.stockQuantity} unidades en stock` 
+                        : 'Agotado'}
                     </div>
-                    {product.stockQuantity !== undefined && (
-                      <div className="spec-row">
-                        <div className="spec-label">Disponibilidad</div>
-                        <div className="spec-value">
-                          {product.stockQuantity > 0 
-                            ? `${product.stockQuantity} unidades en stock` 
-                            : 'Agotado'}
-                        </div>
-                      </div>
-                    )}
-                    {product.createdAt && (
-                      <div className="spec-row">
-                        <div className="spec-label">Fecha de incorporación</div>
-                        <div className="spec-value">{formatDate(product.createdAt)}</div>
-                      </div>
-                    )}
-                    
-                    {/* Reserved for future attributes */}
-                    {product.attributes && Object.keys(product.attributes).length > 0 && 
-                      Object.entries(product.attributes).map(([key, value]) => (
-                        <div className="spec-row" key={key}>
-                          <div className="spec-label">{key}</div>
-                          <div className="spec-value">{value.toString()}</div>
-                        </div>
-                      ))}
                   </div>
-                </div>
+                )}
+                
+                {product.createdAt && (
+                  <div className="spec-row">
+                    <div className="spec-label">Fecha de incorporación</div>
+                    <div className="spec-value">{formatDate(product.createdAt)}</div>
+                  </div>
+                )}
+                
+                {/* Display all product attributes */}
+                {product.attributes && Object.keys(product.attributes).length > 0 && 
+                  Object.entries(product.attributes).map(([key, value]) => (
+                    <div className="spec-row" key={key}>
+                      <div className="spec-label">{key}</div>
+                      <div className="spec-value">{value.toString()}</div>
+                    </div>
+                  ))}
               </div>
             </div>
           </>

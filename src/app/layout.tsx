@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
+import { CartProvider } from "@/features/cart/context/CartContext";
 
 export const metadata: Metadata = {
   title: "Katharos",
@@ -19,8 +20,10 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          {/* Main content of the app */}
-          {children}
+          <CartProvider>
+            {/* Main content of the app */}
+            {children}
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material';
 import AdminCard from '../AdminCard/AdminCard';
 import { ProductStats, getProductStats } from '@/features/products/services/get/getProductStats';
+import { getUserCount } from '@/features/auth/services/user/getUserCount';
 import './AdminDashboard.css';
 import ROUTES from '@/shared/routes';
 
@@ -18,16 +19,23 @@ const AdminDashboard: React.FC = () => {
     outOfStock: 0,
     featured: 0
   });
+  const [userCount, setUserCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
-  // Fetch product statistics when component mounts
+  // Fetch statistics when component mounts
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const stats = await getProductStats();
+        // Fetch both product stats and user count in parallel
+        const [stats, users] = await Promise.all([
+          getProductStats(),
+          getUserCount()
+        ]);
+        
         setProductStats(stats);
+        setUserCount(users);
       } catch (error) {
-        console.error('Error fetching product statistics:', error);
+        console.error('Error fetching statistics:', error);
       } finally {
         setLoading(false);
       }
@@ -62,31 +70,13 @@ const AdminDashboard: React.FC = () => {
           ]}
         />
 
-        {/* Orders Card (placeholder for future) */}
-        <AdminCard
-          title="Pedidos"
-          icon={ShoppingBag}
-          type="orders"
-          statistics={[
-            { label: 'Pendientes', value: 'Próximamente' },
-            { label: 'Completados', value: 'Próximamente' }
-          ]}
-          actions={[
-            { 
-              label: 'Ver pedidos', 
-              onClick: () => alert('Función disponible próximamente'),
-              primary: true
-            }
-          ]}
-        />
-
-        {/* Users Card (placeholder for future) */}
+        {/* Users Card with real data */}
         <AdminCard
           title="Usuarios"
           icon={People}
           type="users"
           statistics={[
-            { label: 'Registrados', value: 'Próximamente' }
+            { label: 'Registrados', value: loading ? '...' : userCount, loading }
           ]}
           actions={[
             { 

@@ -11,6 +11,7 @@ import { getAllCategories } from '@/features/products/types/category';
 import useAuth from '@/features/auth/hooks/useAuth';
 import ROUTES from '@/shared/routes';
 import signOutUser from '@/features/auth/services/signOut';
+import { useCart } from '@/features/cart/context/CartContext';
 
 interface NavbarProps {
   // Define any props that Navbar might need
@@ -23,6 +24,8 @@ function NavbarContent(props: NavbarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const { getCartItemsCount } = useCart();
+  const cartItemsCount = getCartItemsCount();
 
   /**
    * Close dropdown when clicking outside
@@ -151,10 +154,13 @@ function NavbarContent(props: NavbarProps) {
           />
         </div>
         <div className="right">
-          <Link href={ROUTES.CART} className="cart-button">
-            <ShoppingCartOutlined className='icon'/>
-            <span>Carrito</span>
-          </Link>
+        <Link href={ROUTES.CART} className="cart-button">
+          <ShoppingCartOutlined className='icon'/>
+          <span className='cart-text'>Carrito</span>
+          {cartItemsCount > 0 && (
+            <span className="cart-count">{cartItemsCount}</span>
+          )}
+        </Link>
           
           {renderAuthButton()}
         </div>

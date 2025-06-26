@@ -86,24 +86,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 Development is still required for the following features:
 
-- [ ] Implement individual product pages (by ID)
-  - Detailed product page (with images, description, price, etc.)
-  - Implement as a component for reusability in admin dashboard product creation/update
-
-- [ ] Implement product management features (CRUD operations)
-  - Phases:
-    Connect to create/update services
-    - Phase 4: Integration & Polish
-    Connect all components
-    Add loading states and error handling
-    Implement responsive design
-    Add animations and transitions
-
-- [ ] Implement cart management features
-  - Add products to cart
-  - Update product quantities in cart
-  - Remove products from cart
-
 - [ ] Implement checkout
   - Create order summary page
   - Implement payment processing (first, Yape/Plin, then Stripe or similar)

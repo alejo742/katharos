@@ -52,6 +52,8 @@
 	gap: 1.5rem;
 }
 .cart-button {
+	border: 0.1rem solid #E56F56;
+	color: #010101;
 	padding: 1rem 2rem;
 	border-radius: 0.5rem;
 	display: flex;
@@ -62,18 +64,40 @@
 }
 .cart-button:hover {
 	cursor: pointer;
-	background-color: rgba(229, 111, 86, 0.2);
+	background-color: #E56F56;
+	color: #F2F0EA;
 }
 .cart-button .icon {
 	width: 2rem;
 	height: 2rem;
 	color: #E56F56;
 }
-.cart-button span {
+.cart-button:hover .icon {
+	color: #F2F0EA;
+}
+.cart-text {
 	font-size: 1.4rem;
 	font-weight: 600;
-	color: var(--colorPrimaryDark);
 }
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--colorSecondaryRed);
+  color: white;
+  font-size: 1.2rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+.cart-button {
+  position: relative;
+}
+
 .navbar-login-button {
 	padding: 1rem 2rem;
 	border-radius: 0.5rem;
