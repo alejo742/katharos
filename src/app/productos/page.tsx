@@ -52,8 +52,12 @@ function ProductsContent() {
           maxPrice: priceRange[1]
         });
         
+        // Ensure total is at least the number of products we received
+        // This handles cases where the API might return an incorrect total
+        const actualTotal = Math.max(result.products.length, result.total);
+        
         setProducts(result.products);
-        setTotalProducts(result.total);
+        setTotalProducts(actualTotal);
         setHasMore(result.hasMore);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -61,7 +65,6 @@ function ProductsContent() {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, [categoryParam, queryParam, currentPage, priceRange]);
   
@@ -174,17 +177,17 @@ function ProductsContent() {
         </div>
         
         <div className="products-grid">
-          <div className="products-header">
-            <h3>
-              {queryParam 
-                ? `Resultados para "${queryParam}"` 
-                : categoryParam !== 'all' 
-                  ? `Categoría: ${getCategoryName(categoryParam)}` 
-                  : 'Todos los productos'
-              }
-            </h3>
-            <p>{totalProducts} productos encontrados</p>
-          </div>
+        <div className="products-header">
+          <h3>
+            {queryParam 
+              ? `Resultados para "${queryParam}"` 
+              : categoryParam !== 'all' 
+                ? `Categoría: ${getCategoryName(categoryParam)}` 
+                : 'Todos los productos'
+            }
+          </h3>
+          <p>{totalProducts} {totalProducts === 1 ? 'producto encontrado' : 'productos encontrados'}</p>
+        </div>
           
           {products.length > 0 ? (
             <>
@@ -261,7 +264,8 @@ function ProductsContent() {
                   </div>
                 )}
                 
-                {hasMore && (
+                {/* Only show "Cargar más productos" if there are actually more products and we're not on the last page */}
+                {hasMore && currentPage < totalPages && (
                   <button className="load-more-button" onClick={handleLoadMore}>
                     Cargar más productos
                   </button>

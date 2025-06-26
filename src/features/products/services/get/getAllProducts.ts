@@ -201,7 +201,7 @@ export async function getAllProducts(options: ProductsQueryOptions = {}): Promis
       
       return {
         products: result.products,
-        total: result.products.length * 2, // Estimate total for first page
+        total: result.products.length, // Estimate total for first page
         hasMore: result.lastDoc !== null,
         lastDoc: result.lastDoc
       };
