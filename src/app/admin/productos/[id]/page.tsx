@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { AddAPhoto, Save, ArrowBack, Delete } from '@mui/icons-material';
+import { AddAPhoto, Save, ArrowBack, Delete, CheckCircle } from '@mui/icons-material';
 import Navbar from '@/shared/components/Navbar/Navbar';
 import LoadingOverlay from '@/shared/components/LoadingOverlay/LoadingOverlay';
 import { Product } from '@/features/products/types/product';
-import { CATEGORIES } from '@/features/products/types/category';
+import { getAllCategories } from '@/features/products/types/category';
 import { getProductById } from '@/features/products/services/get/getProductById';
 import { updateProduct } from '@/features/products/services/update/updateProduct';
-import { createProduct } from '@/features/products/services/create/createProduct'; // Import createProduct
+import { createProduct } from '@/features/products/services/create/createProduct';
 import { uploadProductImages } from '@/features/products/services/images/uploadProductImages';
 import { deleteProductImage } from '@/features/products/services/images/deleteProductImage';
 import ROUTES from '@/shared/routes';
@@ -29,6 +29,9 @@ export default function ProductEditPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
+  // Get categories as array for dropdown menu
+  const categories = getAllCategories().filter(cat => cat.id !== 'all');
   
   // Image upload refs
   const fileInputRefs = [
@@ -347,6 +350,16 @@ export default function ProductEditPage() {
       <Navbar />
       <LoadingOverlay isVisible={loading || saving} />
       
+      {/* Success Message Overlay */}
+      {success && (
+        <div className="success-message-overlay">
+          <div className="success-message-content">
+            <CheckCircle className="success-icon" />
+            <p>{success}</p>
+          </div>
+        </div>
+      )}
+      
       <div className="product-edit-container">
         <div className="product-edit-header">
           <button 
@@ -358,15 +371,10 @@ export default function ProductEditPage() {
           <h1>{isCreateMode ? 'Crear Nuevo Producto' : 'Editar Producto'}</h1>
         </div>
         
+        {/* Error message stays in place as it requires attention */}
         {error && (
           <div className="alert error">
             <p>{error}</p>
-          </div>
-        )}
-        
-        {success && (
-          <div className="alert success">
-            <p>{success}</p>
           </div>
         )}
         
@@ -491,7 +499,7 @@ export default function ProductEditPage() {
                 required
               >
                 <option value="">Seleccionar categoría</option>
-                {CATEGORIES.filter(cat => cat.id !== 'all').map(category => (
+                {categories.map(category => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>

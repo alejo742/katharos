@@ -14,6 +14,7 @@ import { getAllProducts } from '@/features/products/services/get/getAllProducts'
 import { FilterList, Search, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import Link from 'next/link';
 import ROUTES from '@/shared/routes';
+import { CATEGORIES } from '@/features/products/types/category';
 
 // Number of products per page
 const PRODUCTS_PER_PAGE = 16;

@@ -131,6 +131,7 @@
 
 .products-table th, .products-table td {
   padding: 1.2rem 1.5rem;
+  font-size: 1.3rem;
   text-align: left;
   border-bottom: 1px solid #eee;
 }
@@ -325,4 +326,52 @@
     width: 100%;
     justify-content: space-between;
   }
+}
+
+/* Success message overlay */
+.success-message-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.success-message-content {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 90%;
+  animation: slideUp 0.3s ease-out;
+}
+
+.success-icon {
+  color: var(--colorSecondaryGreen);
+  font-size: 2rem;
+  margin-right: 15px;
+}
+
+.success-message-content p {
+  font-size: 1.2rem;
+  color: var(--colorPrimaryDark);
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

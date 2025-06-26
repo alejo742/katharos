@@ -7,7 +7,7 @@ import './Navbar.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { Category, CATEGORIES } from '@/features/products/types/category';
+import { getAllCategories, getCategoryName } from '@/features/products/types/category';
 import useAuth from '@/features/auth/hooks/useAuth';
 import ROUTES from '@/shared/routes';
 import signOutUser from '@/features/auth/services/signOut';
@@ -68,12 +68,16 @@ export default function Navbar(props: NavbarProps) {
    */
   const isAllProductsActive = (): boolean => {
     // If there's no category param or it doesn't match any known category
-    const knownCategoryIds = CATEGORIES.filter(cat => cat.id !== 'all').map(cat => cat.id);
+    const allCategories = getAllCategories();
+    const knownCategoryIds = allCategories.filter(cat => cat.id !== 'all').map(cat => cat.id);
     return !categoryParam || !knownCategoryIds.includes(categoryParam);
   }
 
+  // Get all categories as array for rendering
+  const allCategories = getAllCategories();
+  
   // Get display categories (exclude 'all' since we handle it separately)
-  const displayCategories = CATEGORIES.filter(category => category.id !== 'all');
+  const displayCategories = allCategories.filter(category => category.id !== 'all');
 
   // Get user display name
   const displayName = user?.displayName || user?.email?.split('@')[0] || 'Usuario';
@@ -171,7 +175,7 @@ export default function Navbar(props: NavbarProps) {
               Todos los Productos
             </Link>
           </li>
-          {displayCategories.map((category: Category) => (
+          {displayCategories.map((category) => (
             <li key={category.id}>
               <Link 
                 href={`${ROUTES.PRODUCTS}?category=${category.id}`}

@@ -6,7 +6,6 @@ import Navbar from '@/shared/components/Navbar/Navbar';
 import LoadingOverlay from '@/shared/components/LoadingOverlay/LoadingOverlay';
 import { getProductById } from '@/features/products/services/get/getProductById';
 import { Product } from '@/features/products/types/product';
-import { CATEGORIES } from '@/features/products/types/category';
 import { 
   CheckCircle, 
   RemoveCircle, 
@@ -15,14 +14,13 @@ import {
   FavoriteBorder,
   Share
 } from '@mui/icons-material';
-import useAuth from '@/features/auth/hooks/useAuth';
 import ROUTES from '@/shared/routes';
+import { getCategoryName } from '@/features/products/types/category';
 import './page.css';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
   const productId = params.id as string;
   
   const [product, setProduct] = useState<Product | null>(null);
@@ -93,12 +91,6 @@ export default function ProductDetailPage() {
     
     // For now, just show an alert
     alert(`Producto añadido al carrito: ${product?.name} (x${quantity})`);
-  };
-  
-  // Get category name from ID
-  const getCategoryName = (categoryId: string) => {
-    const category = CATEGORIES.find(c => c.id === categoryId);
-    return category ? category.name : 'Sin categoría';
   };
   
   // Format date for display

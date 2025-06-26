@@ -12,6 +12,7 @@ import useAuth from '@/features/auth/hooks/useAuth';
 import { checkAdminStatus } from '@/features/admin/services/checkAdminStatus';
 import ROUTES from '@/shared/routes';
 import './page.css';
+import { CATEGORIES } from '@/features/products/types/category';
 
 export default function AdminProductsPage() {
   const router = useRouter();
@@ -45,7 +46,7 @@ export default function AdminProductsPage() {
 
         // Fetch products
         const fetchedProducts = await getAllProducts();
-        setProducts(fetchedProducts);
+        setProducts(fetchedProducts.products);
       } catch (error) {
         console.error("Error:", error);
       } finally {
@@ -202,7 +203,12 @@ export default function AdminProductsPage() {
                         />
                       </td>
                       <td>{product.name}</td>
-                      <td>{product.category}</td>
+                      <td>
+                        {/* Get the name of the category */}
+                        {CATEGORIES.filter((categoryElement) => {
+                          return categoryElement.slug === product.category;
+                        })[0].name}
+                      </td>
                       <td>S/ {product.price.toFixed(2)}</td>
                       <td>
                         {product.stockQuantity > 0 ? (
@@ -221,7 +227,7 @@ export default function AdminProductsPage() {
                       <td className="actions-column">
                         <button 
                           className="edit-button"
-                          onClick={() => router.push(`/admin/products/edit/${product.id}`)}
+                          onClick={() => router.push(ROUTES.ADMIN_PRODUCT_EDIT(product.id))}
                         >
                           <Edit />
                         </button>
