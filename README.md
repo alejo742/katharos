@@ -87,9 +87,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 Development is still required for the following features:
 
 - [ ] Implement checkout
-  - Create order summary page
-  - Implement payment processing (first, Yape/Plin, then Stripe or similar)
-  - Order confirmation page (and email notification)
+  - Implement payment processing with Stripe
 
 - [ ] Finish user authentication (almost done)
   - User registration with OAuth (Facebook and Apple)

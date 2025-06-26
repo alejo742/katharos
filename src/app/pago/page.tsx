@@ -7,13 +7,13 @@ import Navbar from '@/shared/components/Navbar/Navbar';
 import ROUTES from '@/shared/routes';
 import './page.css';
 
-// WhatsApp business phone number (replace with your actual number)
-const WHATSAPP_NUMBER = "51987654321"; // Format: country code + number
+// WhatsApp business phone number
+const WHATSAPP_NUMBER = "51992885774"; // Format: country code + number
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, getCartTotal, clearCart } = useCart();
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(15);
   
   useEffect(() => {
     // Redirect if cart is empty
@@ -76,7 +76,7 @@ export default function CheckoutPage() {
       <div className="checkout-container">
         <div className="redirect-card">
           <div className="redirect-icon">
-            <img src="/whatsapp-icon.png" alt="WhatsApp" />
+            <img src="/icons/whatsapp-icon.png" alt="WhatsApp" />
           </div>
           
           <h1>Completando tu pedido</h1>
