@@ -10,7 +10,9 @@ import {
   CheckCircle, 
   RemoveCircle, 
   ArrowBack, 
-  AddShoppingCart
+  AddShoppingCart,
+  Add,
+  Remove
 } from '@mui/icons-material';
 import ROUTES from '@/shared/routes';
 import { getCategoryName } from '@/features/products/types/category';
@@ -242,21 +244,21 @@ export default function ProductDetailPage() {
                         onClick={decrementQuantity}
                         disabled={quantity <= 1}
                       >
-                        -
+                        <Remove fontSize="small" />
                       </button>
                       <input 
                         type="number" 
                         min="1" 
-                        max={product.stockQuantity} 
+                        max={product?.stockQuantity} 
                         value={quantity}
                         onChange={handleQuantityChange}
                       />
                       <button 
                         className="quantity-button" 
                         onClick={incrementQuantity}
-                        disabled={quantity >= product.stockQuantity}
+                        disabled={quantity >= (product?.stockQuantity || 1)}
                       >
-                        +
+                        <Add fontSize="small" />
                       </button>
                     </div>
                     

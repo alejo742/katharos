@@ -16,15 +16,14 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  padding-bottom: 60px; /* Added bottom margin to avoid cramped appearance */
+  padding-bottom: 60px;
 }
 
-/* Breadcrumb styles - Increased size */
 .product-breadcrumb {
   display: flex;
   align-items: center;
   margin-bottom: 30px;
-  font-size: 1.4rem; /* Increased from 0.9rem */
+  font-size: 1.4rem;
   color: var(--colorSecondaryGray);
 }
 
@@ -187,25 +186,25 @@
 }
 
 .regular-price {
-  font-size: 2.2rem; /* Increased from 1.8rem */
+  font-size: 2.2rem; 
   font-weight: 600;
   color: var(--colorPrimaryDark);
 }
 
 .original-price {
-  font-size: 1.6rem; /* Increased from 1.2rem */
+  font-size: 1.6rem;
   color: var(--colorSecondaryGray);
   text-decoration: line-through;
 }
 
 .sale-price {
-  font-size: 2.2rem; /* Increased from 1.8rem */
+  font-size: 2.2rem; 
   font-weight: 600;
   color: var(--colorSecondaryRed);
 }
 
 .product-stock-status {
-  margin-bottom: 0; /* Removed margin */
+  margin-bottom: 0; 
 }
 
 .in-stock, .out-of-stock {
@@ -213,7 +212,7 @@
   align-items: center;
   gap: 8px;
   font-weight: 500;
-  font-size: 1.5rem; /* Increased size */
+  font-size: 1.5rem; 
 }
 
 .in-stock {
@@ -225,15 +224,14 @@
 }
 
 .in-stock svg, .out-of-stock svg {
-  font-size: 1.8rem; /* Increased icon size */
+  font-size: 1.8rem; 
 }
 
-/* Product description - Moved closer to title */
 .product-description {
   color: var(--colorSecondaryGray);
   line-height: 1.6;
-  font-size: 1.5rem; /* Increased font size */
-  margin-bottom: 10px; /* Space between description and buttons */
+  font-size: 1.5rem; 
+  margin-bottom: 10px; 
 }
 
 .product-description p {
@@ -256,13 +254,22 @@
 }
 
 .quantity-button {
-  width: 45px; /* Increased width */
+  width: 45px;
   height: 100%;
   border: none;
   background-color: #f5f5f5;
   cursor: pointer;
-  font-size: 1.6rem; /* Increased font size */
   transition: background-color 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quantity-button svg {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 .quantity-button:hover:not(:disabled) {
@@ -275,11 +282,11 @@
 }
 
 .quantity-selector input {
-  width: 60px; /* Increased width */
+  width: 60px;
   height: 100%;
   border: none;
   text-align: center;
-  font-size: 1.6rem; /* Increased font size */
+  font-size: 1.6rem;
   -moz-appearance: textfield;
 }
 
@@ -301,7 +308,7 @@
   border: none;
   border-radius: 4px;
   font-weight: 500;
-  font-size: 1.6rem; /* Increased font size */
+  font-size: 1.6rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -311,10 +318,9 @@
 }
 
 .add-to-cart-button svg {
-  font-size: 1.8rem; /* Increased icon size */
+  font-size: 1.8rem;
 }
 
-/* Improved category display */
 .product-category-container {
   margin-top: 30px;
   padding: 15px;
@@ -327,17 +333,16 @@
 
 .category-label {
   font-weight: 600;
-  font-size: 1.5rem; /* Increased size */
+  font-size: 1.5rem; 
   color: var(--colorPrimaryDark);
 }
 
 .category-value {
-  font-size: 1.5rem; /* Increased size */
+  font-size: 1.5rem; 
   color: var(--colorSecondaryGreen);
   font-weight: 500;
 }
 
-/* Specifications section - Redesigned for better flow */
 .product-specifications {
   margin-top: 40px;
   padding-top: 30px;
@@ -345,7 +350,7 @@
 }
 
 .product-specifications h2 {
-  font-size: 2rem; /* Increased size */
+  font-size: 2rem; 
   font-weight: 600;
   margin-bottom: 25px;
   color: var(--colorPrimaryDark);
@@ -357,7 +362,7 @@
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #eee;
-  max-width: 800px; /* Limit width for better readability */
+  max-width: 800px;
 }
 
 .spec-row {
@@ -370,8 +375,8 @@
 }
 
 .spec-label, .spec-value {
-  padding: 15px; /* Increased padding */
-  font-size: 1.4rem; /* Increased font size */
+  padding: 15px; 
+  font-size: 1.4rem; 
 }
 
 .spec-label {
@@ -398,20 +403,20 @@
 .product-error h2 {
   margin-bottom: 20px;
   color: var(--colorSecondaryRed);
-  font-size: 2rem; /* Increased size */
+  font-size: 2rem; 
 }
 
 .product-error button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px; /* Increased padding */
+  padding: 12px 24px; 
   background-color: var(--colorSecondaryGreen);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1.6rem; /* Increased font size */
+  font-size: 1.6rem; 
   transition: background-color 0.2s;
 }
 
@@ -488,9 +493,6 @@
   }
 }
 
-/* Only showing the updated parts of the CSS file */
-
-/* Product actions - fixed responsiveness */
 .product-actions {
   display: flex;
   gap: 15px;
@@ -500,21 +502,21 @@
 .quantity-selector {
   display: flex;
   align-items: center;
-  height: 50px; /* Increased height */
+  height: 50px; 
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
-  min-width: 150px; /* Added minimum width */
+  min-width: 150px;
   flex-shrink: 0; /* Prevent shrinking */
 }
 
 .quantity-button {
-  width: 45px; /* Increased width */
+  width: 45px;
   height: 100%;
   border: none;
   background-color: #f5f5f5;
   cursor: pointer;
-  font-size: 1.6rem; /* Increased font size */
+  font-size: 1.6rem; 
   transition: background-color 0.2s;
   flex-shrink: 0; /* Prevent shrinking */
   display: flex;
@@ -532,11 +534,11 @@
 }
 
 .quantity-selector input {
-  width: 60px; /* Increased width */
+  width: 60px; 
   height: 100%;
   border: none;
   text-align: center;
-  font-size: 1.6rem; /* Increased font size */
+  font-size: 1.6rem;
   -moz-appearance: textfield;
   flex-grow: 0; /* Don't allow growing */
   flex-shrink: 0; /* Don't allow shrinking */
@@ -571,11 +573,10 @@
 }
 
 .add-to-cart-button svg {
-  font-size: 1.8rem; /* Increased icon size */
+  font-size: 1.8rem; 
   flex-shrink: 0; /* Don't allow icon to shrink */
 }
 
-/* Responsive styles - improved for smaller screens */
 @media (max-width: 768px) {
   .product-detail-content {
     grid-template-columns: 1fr;
@@ -593,13 +594,13 @@
   
   .product-actions {
     flex-direction: column;
-    gap: 20px; /* Increased gap between stacked elements */
-    margin-top: 25px; /* More space above actions */
+    gap: 20px; 
+    margin-top: 25px;
   }
   
   .quantity-selector {
     width: fit-content;
-    margin: 0 auto; /* Center the selector */
+    margin: 0 auto;
   }
   
   .add-to-cart-button {
@@ -653,16 +654,16 @@
   }
   
   .add-to-cart-button svg {
-    font-size: 1.6rem; /* Slightly smaller icon */
+    font-size: 1.6rem; 
   }
   
   .quantity-button {
-    width: 40px; /* Slightly smaller on mobile */
+    width: 40px; 
     font-size: 1.4rem;
   }
   
   .quantity-selector {
-    min-height: 45px; /* Slightly smaller height */
+    min-height: 45px;
   }
   
   .quantity-selector input {

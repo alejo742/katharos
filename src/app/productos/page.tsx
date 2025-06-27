@@ -1,7 +1,3 @@
-/**
- * Products page
- * This page displays a list of products available in the store.
- */
 "use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -31,15 +27,55 @@ function ProductsContent() {
   
   // State
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [totalProducts, setTotalProducts] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(true);
+  const [maxProductPrice, setMaxProductPrice] = useState<number>(200);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
   const [currentPage, setCurrentPage] = useState<number>(pageParam);
+  const [initialLoadComplete, setInitialLoadComplete] = useState<boolean>(false);
   
-  // Fetch products based on URL parameters and pagination
+  // First load - fetch all products to determine price range
   useEffect(() => {
+    const fetchAllProducts = async () => {
+      try {
+        // Fetch all products without pagination to determine max price
+        const result = await getAllProducts({
+          fetchAll: true,
+          category: categoryParam,
+          query: queryParam
+        });
+        
+        setAllProducts(result.products);
+        
+        // Find max price among all products
+        if (result.products.length > 0) {
+          const highestPrice = Math.max(...result.products.map(p => 
+            Math.max(p.price, p.salePrice || 0)
+          ));
+          // Round up to nearest 50 for a nicer UI
+          const roundedMax = Math.ceil(highestPrice / 50) * 50;
+          setMaxProductPrice(roundedMax);
+          setPriceRange([0, roundedMax]);
+        }
+        
+        setInitialLoadComplete(true);
+      } catch (error) {
+        console.error('Error fetching initial products:', error);
+        setInitialLoadComplete(true);
+      }
+    };
+    
+    fetchAllProducts();
+  }, [categoryParam, queryParam]);
+  
+  // Fetch products based on URL parameters, pagination, and price filter
+  useEffect(() => {
+    // Don't fetch until initial load is complete
+    if (!initialLoadComplete) return;
+    
     const fetchProducts = async () => {
       setLoading(true);
       try {
@@ -52,12 +88,18 @@ function ProductsContent() {
           maxPrice: priceRange[1]
         });
         
-        // Ensure total is at least the number of products we received
-        // This handles cases where the API might return an incorrect total
-        const actualTotal = Math.max(result.products.length, result.total);
+        // Filter client-side by price range if needed
+        // This ensures the filter works even if the server doesn't support it
+        let filteredProducts = result.products;
+        if (priceRange[0] > 0 || priceRange[1] < maxProductPrice) {
+          filteredProducts = filteredProducts.filter(product => {
+            const productPrice = product.salePrice || product.price;
+            return productPrice >= priceRange[0] && productPrice <= priceRange[1];
+          });
+        }
         
-        setProducts(result.products);
-        setTotalProducts(actualTotal);
+        setProducts(filteredProducts);
+        setTotalProducts(filteredProducts.length);
         setHasMore(result.hasMore);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -65,8 +107,9 @@ function ProductsContent() {
         setLoading(false);
       }
     };
+    
     fetchProducts();
-  }, [categoryParam, queryParam, currentPage, priceRange]);
+  }, [categoryParam, queryParam, currentPage, priceRange, initialLoadComplete]);
   
   // Update URL when filters change
   const updateUrlParams = (params: {
@@ -103,7 +146,8 @@ function ProductsContent() {
   // Handler for price range change
   const handlePriceRangeChange = (newRange: [number, number]) => {
     setPriceRange(newRange);
-    // Price filtering is applied client-side for simplicity
+    // Reset to page 1 when price filter changes
+    setCurrentPage(1);
   };
   
   // Toggle filters visibility
@@ -128,10 +172,16 @@ function ProductsContent() {
   // Calculate total pages
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
 
+  // Filter visible products by current price range
+  const filteredProducts = products.filter(product => {
+    const productPrice = product.salePrice || product.price;
+    return productPrice >= priceRange[0] && productPrice <= priceRange[1];
+  });
+
   return (
     <div className="products-page-container">
       <Navbar />
-      <LoadingOverlay isVisible={loading} />
+      <LoadingOverlay isVisible={loading && !products.length} />
       
       <div className="products-hero">
         <div className="products-hero-content">
@@ -161,7 +211,7 @@ function ProductsContent() {
                   <input 
                     type="range" 
                     min="0" 
-                    max="200" 
+                    max={maxProductPrice} 
                     value={priceRange[1]} 
                     onChange={(e) => handlePriceRangeChange([priceRange[0], parseInt(e.target.value)])}
                     className="price-slider"
@@ -177,22 +227,22 @@ function ProductsContent() {
         </div>
         
         <div className="products-grid">
-        <div className="products-header">
-          <h3>
-            {queryParam 
-              ? `Resultados para "${queryParam}"` 
-              : categoryParam !== 'all' 
-                ? `Categoría: ${getCategoryName(categoryParam)}` 
-                : 'Todos los productos'
-            }
-          </h3>
-          <p>{totalProducts} {totalProducts === 1 ? 'producto encontrado' : 'productos encontrados'}</p>
-        </div>
+          <div className="products-header">
+            <h3>
+              {queryParam 
+                ? `Resultados para "${queryParam}"` 
+                : categoryParam !== 'all' 
+                  ? `Categoría: ${getCategoryName(categoryParam)}` 
+                  : 'Todos los productos'
+              }
+            </h3>
+            <p>{filteredProducts.length} {filteredProducts.length === 1 ? 'producto encontrado' : 'productos encontrados'}</p>
+          </div>
           
-          {products.length > 0 ? (
+          {filteredProducts.length > 0 ? (
             <>
               <div className="products-list">
-                {products.map(product => (
+                {filteredProducts.map(product => (
                   <Link href={ROUTES.PRODUCT_DETAIL(product.id)} key={product.id} className="product-card">
                     <div className="product-image">
                       <img src={product.images[0]} alt={product.name} />
